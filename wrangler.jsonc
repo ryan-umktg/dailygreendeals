@@ -14,8 +14,8 @@
     "ADMIN_EMAIL": "ryan@untouchablemarketing.com",
     // Cloudflare Access team domain and the Access application's AUD tag (Zero Trust dashboard).
     // Fill these in after creating the Access application for dailygreendeals.com/admin*.
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": "",
+    "ACCESS_TEAM_DOMAIN": "icy-darkness-e794.cloudflareaccess.com",
+    "ACCESS_AUD": "b7ba385ac5da62827df47f8b09b24a3224c3d62988cab1d6b9ba0f391c1a7648",
     // Model used to pull deals out of newsletters.
     "EXTRACT_MODEL": "claude-sonnet-5-5",
     // Optional: route extraction through Cloudflare AI Gateway, e.g.
