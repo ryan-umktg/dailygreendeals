@@ -70,14 +70,14 @@ DRY_RUN=1 IMAP_USER=info@dailygreendeals.com IMAP_PASS=... npm run poll
    npx wrangler secret put ANTHROPIC_API_KEY
    npx wrangler secret put INGEST_TOKEN        # any long random string, e.g. `openssl rand -hex 32`
    ```
-4. `npm run deploy`. It goes live on a `*.workers.dev` URL first.
+4. `npm run deploy`. It goes live on `new.dailygreendeals.com` (set in `wrangler.jsonc`), with WordPress still on the main domain. Non-production hostnames send `noindex`.
 5. **Protect `/admin/`** with Cloudflare Zero Trust → Access → Applications → Self-hosted:
-   - Domain: the workers.dev hostname (and later `dailygreendeals.com`), path `admin`. Add a second application, or a second path, for `api/admin`.
+   - Domain `new.dailygreendeals.com` with path `admin`, plus a second destination with path `api/admin`. Add the main domain at cutover. (Access can't protect paths on a workers.dev URL, which is why the site runs on a subdomain.)
    - Policy: allow the email in `ADMIN_EMAIL` (one-time PIN login is fine).
    - Copy the team domain (`<team>.cloudflareaccess.com`) and the application's AUD tag into `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD` in `wrangler.jsonc`, then deploy again. Until both are set, `/admin/` returns 403.
 6. **Inbox poller.** In GitHub → Settings → Secrets and variables → Actions:
    - Secrets: `IMAP_USER` (`info@dailygreendeals.com`), `IMAP_PASS`, `INGEST_TOKEN` (same value as step 3).
-   - Variable: `INGEST_URL`, the workers.dev URL + `/api/ingest/` until the domain moves over.
+   - Variable (optional): `INGEST_URL`. The default is `https://new.dailygreendeals.com/api/ingest/`; change it at cutover.
    - Run "Poll inbox" once by hand from the Actions tab and check its log.
 
 ## Notes
