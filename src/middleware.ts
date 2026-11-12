@@ -9,5 +9,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (!email) return new Response('Not authorized', { status: 403 });
     context.locals.adminEmail = email;
   }
-  return next();
+  const response = await next();
+  // Keep pre-launch hostnames (new.dailygreendeals.com, workers.dev) out of search results.
+  if (context.url.hostname !== 'dailygreendeals.com' && context.url.hostname !== 'www.dailygreendeals.com') {
+    response.headers.set('x-robots-tag', 'noindex, nofollow');
+  }
+  return response;
 });

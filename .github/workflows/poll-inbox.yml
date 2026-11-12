@@ -27,4 +27,4 @@ jobs:
           IMAP_USER: ${{ secrets.IMAP_USER }}
           IMAP_PASS: ${{ secrets.IMAP_PASS }}
           INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
-          INGEST_URL: ${{ vars.INGEST_URL || 'https://dailygreendeals.com/api/ingest/' }}
+          INGEST_URL: ${{ vars.INGEST_URL || 'https://new.dailygreendeals.com/api/ingest/' }}

@@ -6,6 +6,9 @@
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
+  // Runs on new.dailygreendeals.com while WordPress keeps the main domain. Add dailygreendeals.com
+  // and www here at cutover. A custom domain (not workers.dev) is what lets Cloudflare Access protect /admin/.
+  "routes": [{ "pattern": "new.dailygreendeals.com", "custom_domain": true }],
   "vars": {
     // Only this address may use /admin/ (checked against the Cloudflare Access login).
     "ADMIN_EMAIL": "ryan@untouchablemarketing.com",
