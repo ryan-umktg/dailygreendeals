@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/*
+  Design notes
+  - The site's one bold device is the "deal sheet": a contractor-estimate style ledger with
+    pencil-yellow highlights that shows a borrower's numbers. It appears in the homepage hero
+    and beside every quiz step. Everything else stays quiet.
+  - Archivo (semi-condensed, heavy) for headings and UI; Source Serif 4 for reading.
+  - Cool paper and spruce green, not cream and clay.
+*/
+
+@theme {
+  --color-paper: #f6f7f4;
+  --color-sheet: #ffffff;
+  --color-ink: #1b2420;
+  --color-muted: #56625c;
+  --color-rule: #d6dbd5;
+  --color-spruce: #1e4b3d;
+  --color-spruce-deep: #133328;
+  --color-chalk: #2e5f8a;
+  --color-pencil: #f1c24b;
+  --color-pencil-soft: #fbedc2;
+  --color-alert: #a3402b;
+
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-sans);
+    font-stretch: 87.5%;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-chalk);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-[3px] px-5 py-3 text-base font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45;
+}
+@utility btn-primary {
+  @apply btn bg-spruce text-white hover:bg-spruce-deep;
+}
+@utility btn-quiet {
+  @apply btn border border-rule bg-sheet text-ink hover:border-ink;
+}
+
+@layer components {
+  /* Long-form copy: loan pages, posts, legal pages */
+  /* Used together with Tailwind's `prose prose-lg` classes in the markup. */
+  .copy {
+    max-width: 68ch;
+    font-family: var(--font-serif);
+    --tw-prose-body: var(--color-ink);
+    --tw-prose-headings: var(--color-ink);
+    --tw-prose-links: var(--color-chalk);
+    --tw-prose-bullets: var(--color-spruce);
+    --tw-prose-bold: var(--color-ink);
+    line-height: 1.7;
+  }
+  .copy :where(h2, h3) {
+    font-family: var(--font-sans);
+    font-stretch: 87.5%;
+  }
+  .copy :where(h2) {
+    margin-top: 2.2em;
+  }
+
+  /* The deal sheet ledger */
+  .sheet {
+    @apply rounded-[2px] border border-rule bg-sheet;
+    box-shadow: 0 1px 0 var(--color-rule), 0 12px 24px -18px rgb(27 36 32 / 0.35);
+  }
+  /* Ledger rows: one ruled line under each, like an estimate pad. */
+  .sheet-row {
+    @apply flex min-h-11 items-center justify-between gap-4 border-b border-rule px-5 py-2;
+  }
+  .sheet-row:last-child {
+    border-bottom: 0;
+  }
+  .sheet dl + p,
+  .sheet dl + div {
+    border-top: 1px solid var(--color-rule);
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .marker {
+    background: linear-gradient(
+      to bottom,
+      transparent 0.18em,
+      var(--color-pencil) 0.18em,
+      var(--color-pencil) 1.05em,
+      transparent 1.05em
+    );
+    padding-inline: 0.15em;
+  }
+}

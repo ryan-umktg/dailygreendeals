@@ -1,0 +1,35 @@
+{
+  "name": "dailygreendeals",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler dev",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply dgd --remote",
+    "db:migrate:local": "wrangler d1 migrations apply dgd --local",
+    "poll": "node scripts/poll-inbox.mjs",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.4.7",
+    "@astrojs/preact": "^6.1.5",
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.11",
+    "jose": "^6.2.17",
+    "postal-mime": "^4.2.1",
+    "preact": "^11.2.0",
+    "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "imapflow": "^2.11.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.161.0"
+  }
+}

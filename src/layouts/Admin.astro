@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  ['/admin/', 'Review queue'],
+  ['/admin/inbox/', 'Inbox'],
+  ['/admin/stores/', 'Stores'],
+  ['/admin/deals/', 'Live deals'],
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title} · DGD admin</title>
+  </head>
+  <body class="min-h-screen bg-paper text-ink">
+    <header class="border-b border-rule bg-sheet">
+      <nav class="mx-auto flex max-w-6xl items-center gap-1 px-4 py-2 text-sm font-medium">
+        <span class="mr-4 font-extrabold">DGD admin</span>
+        {
+          nav.map(([href, label]) => (
+            <a href={href} class:list={['rounded-[3px] px-3 py-2 hover:bg-paper', path === href && 'bg-paper underline']}>
+              {label}
+            </a>
+          ))
+        }
+        <a href="/" class="ml-auto px-3 py-2 text-muted hover:text-ink">View site</a>
+      </nav>
+    </header>
+    <main class="mx-auto max-w-6xl px-4 py-8">
+      <h1 class="mb-6 text-3xl">{title}</h1>
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+---
+/**
+ * Placeholder homepage until Phase 3: lists live deals straight from D1 so the pipeline can be checked end to end.
+ */
+import { env } from 'cloudflare:workers';
+import Base from '../layouts/Base.astro';
+
+export const prerender = false;
+
+const deals = (
+  await (env as Env).DB.prepare(
+    `SELECT d.title, d.scope, d.code, d.url, d.ends_at, d.restrictions, c.name AS company, c.website
+     FROM deals d JOIN companies c ON c.id = d.company_id
+     WHERE d.status = 'approved' AND (d.ends_at IS NULL OR d.ends_at > ?)
+     ORDER BY d.featured DESC, COALESCE(d.value_pct, 0) DESC, d.first_seen_at DESC LIMIT 60`,
+  )
+    .bind(new Date().toISOString())
+    .all<Record<string, any>>()
+).results;
+const ends = (iso: string) => new Date(iso).toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric' });
+---
+
+<Base title="Daily Green Deals: today's CBD and hemp deals" description="Current discounts and codes from online CBD and hemp stores, checked daily.">
+  <section class="mx-auto max-w-6xl px-4 py-10">
+    <h1 class="text-4xl">Today's deals</h1>
+    {
+      deals.length === 0 ? (
+        <p class="mt-6 text-muted">New site coming soon.</p>
+      ) : (
+        <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {deals.map((d) => (
+            <li class="sheet p-5">
+              <p class="text-sm font-semibold text-muted">{d.company}</p>
+              <p class="mt-1 text-xl font-bold">{d.title}</p>
+              {d.code && <p class="mt-2">Code <span class="marker font-mono font-bold">{d.code}</span></p>}
+              {d.ends_at && <p class="mt-1 text-sm text-muted">Ends {ends(d.ends_at)}</p>}
+              {d.restrictions && <p class="mt-2 text-sm text-muted">{d.restrictions}</p>}
+              {(d.url || d.website) && <a class="btn-primary mt-4 !py-2" href={d.url || d.website} rel="nofollow noopener" target="_blank">Shop the deal</a>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</Base>

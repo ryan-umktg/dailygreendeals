@@ -1,0 +1,23 @@
+---
+import { env } from 'cloudflare:workers';
+import Admin from '../../../layouts/Admin.astro';
+import { parseStoredEmail } from '../../../lib/extract';
+
+export const prerender = false;
+const e = env as Env;
+const row = await e.DB.prepare(`SELECT e.*, c.name AS company FROM inbound_emails e LEFT JOIN companies c ON c.id = e.company_id WHERE e.id = ?`)
+  .bind(Number(Astro.params.id))
+  .first<Record<string, any>>();
+if (!row) return new Response('Not found', { status: 404 });
+const obj = await e.RAW_EMAILS.get(row.r2_key);
+const parsed = obj ? await parseStoredEmail(await obj.arrayBuffer()) : null;
+// Shown in a sandboxed iframe: no scripts, no access to the admin page.
+const srcdoc = parsed?.html || `<pre style="white-space:pre-wrap;font-family:sans-serif">${(parsed?.text ?? 'Raw email missing').replace(/</g, '&lt;')}</pre>`;
+---
+
+<Admin title={row.subject ?? '(no subject)'}>
+  <p class="mb-4 text-sm text-muted">
+    {row.company ?? 'Unmatched'} · to {row.alias ?? '—'} · from {row.from_address} · {row.status}
+  </p>
+  <iframe class="sheet h-[80vh] w-full" sandbox="allow-popups allow-popups-to-escape-sandbox" srcdoc={srcdoc} title="Email"></iframe>
+</Admin>

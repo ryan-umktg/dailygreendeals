@@ -1,0 +1,51 @@
+---
+import { env } from 'cloudflare:workers';
+import Admin from '../../layouts/Admin.astro';
+
+export const prerender = false;
+const status = Astro.url.searchParams.get('status');
+const rows = (
+  await (env as Env).DB.prepare(
+    `SELECT e.*, c.name AS company FROM inbound_emails e LEFT JOIN companies c ON c.id = e.company_id
+     ${status ? 'WHERE e.status = ?' : ''} ORDER BY e.id DESC LIMIT 300`,
+  )
+    .bind(...(status ? [status] : []))
+    .all<Record<string, any>>()
+).results;
+const fmt = (iso: string) => new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const tone: Record<string, string> = { unmatched: 'text-alert', failed: 'text-alert', extracted: 'text-spruce', received: 'text-chalk', ignored: 'text-muted' };
+---
+
+<Admin title="Inbox">
+  <p class="mb-4 flex gap-3 text-sm">
+    {['', 'unmatched', 'failed', 'received', 'extracted', 'ignored'].map((s) => <a class:list={['underline', (status ?? '') === s && 'font-bold']} href={s ? `?status=${s}` : '?'}>{s || 'all'}</a>)}
+  </p>
+  <table class="sheet w-full text-sm">
+    <thead class="text-left text-muted">
+      <tr><th class="p-2">Received</th><th>Store / address</th><th>Subject</th><th>Status</th><th>Deals</th><th></th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr class="border-t border-rule align-top">
+            <td class="p-2 whitespace-nowrap">{fmt(r.received_at)}</td>
+            <td class="py-2">
+              <div class="font-semibold">{r.company ?? '—'}</div>
+              <div class="text-muted">{r.alias ?? r.from_address}</div>
+            </td>
+            <td class="py-2"><a class="underline" href={`/admin/emails/${r.id}/`}>{r.subject ?? '(no subject)'}</a>{r.error && <div class="text-alert">{r.error}</div>}</td>
+            <td class:list={['py-2 font-semibold', tone[r.status]]}>{r.status}{r.kind && r.kind !== 'deals' && <div class="font-normal text-muted">{r.kind}</div>}</td>
+            <td class="py-2">{r.deals_found ?? '—'}</td>
+            <td class="py-2">
+              <form method="post" action={`/api/admin/emails/${r.id}/`} class="flex gap-1">
+                <input type="hidden" name="return_to" value={Astro.url.pathname + Astro.url.search} />
+                <button class="btn-quiet !py-1 !px-2 text-xs" name="action" value="rerun">Re-run</button>
+                {r.status !== 'ignored' && <button class="btn-quiet !py-1 !px-2 text-xs" name="action" value="ignore">Ignore</button>}
+              </form>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</Admin>

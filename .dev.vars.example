@@ -1,0 +1,4 @@
+ANTHROPIC_API_KEY=sk-ant-...
+INGEST_TOKEN=local-dev-token
+# Skip the Cloudflare Access check on /admin/ when running locally.
+DEV_ADMIN_BYPASS=1

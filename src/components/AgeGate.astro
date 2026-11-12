@@ -1,0 +1,27 @@
+---
+/**
+ * 21+ overlay. The page underneath is fully rendered, so search engines still read it.
+ * The answer is remembered for a year in a cookie.
+ */
+---
+
+<div id="age-gate" hidden class="fixed inset-0 z-50 grid place-items-center bg-ink/80 p-4">
+  <div class="sheet max-w-sm p-6 text-center" role="dialog" aria-modal="true" aria-labelledby="age-gate-title">
+    <h2 id="age-gate-title" class="text-2xl">Are you 21 or older?</h2>
+    <p class="mt-2 text-muted">This site lists hemp and CBD product deals for adults.</p>
+    <div class="mt-5 flex justify-center gap-3">
+      <button class="btn-primary" data-age="yes">Yes, I'm 21+</button>
+      <a class="btn-quiet" href="https://www.google.com/">No</a>
+    </div>
+  </div>
+</div>
+<script is:inline>
+  (function () {
+    var gate = document.getElementById('age-gate');
+    if (document.cookie.indexOf('dgd_age=21') === -1) gate.hidden = false;
+    gate.querySelector('[data-age="yes"]').addEventListener('click', function () {
+      document.cookie = 'dgd_age=21; max-age=31536000; path=/; samesite=lax';
+      gate.hidden = true;
+    });
+  })();
+</script>

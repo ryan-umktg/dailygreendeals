@@ -1,0 +1,75 @@
+---
+import { env } from 'cloudflare:workers';
+import Admin from '../../layouts/Admin.astro';
+
+export const prerender = false;
+const e = env as Env;
+const stores = (
+  await e.DB.prepare(
+    `SELECT c.*,
+       (SELECT group_concat(address, char(10)) FROM email_sources s WHERE s.company_id = c.id) AS addresses,
+       (SELECT COUNT(*) FROM deals d WHERE d.company_id = c.id AND d.status = 'approved') AS live,
+       (SELECT MAX(received_at) FROM inbound_emails i WHERE i.company_id = c.id) AS last_email
+     FROM companies c ORDER BY c.name`,
+  ).all<Record<string, any>>()
+).results;
+const categories = (await e.DB.prepare('SELECT slug, name FROM categories ORDER BY sort').all<{ slug: string; name: string }>()).results;
+const cannabinoids = (await e.DB.prepare('SELECT slug, name FROM cannabinoids ORDER BY sort').all<{ slug: string; name: string }>()).results;
+const blank = { id: '', name: '', slug: '', website: '', description: '', addresses: '', shipping_notes: '', free_shipping_min: '', lab_results_url: '', status: 'active', categories_sold: '[]', cannabinoids_sold: '[]' };
+const input = 'w-full rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
+const label = 'block text-xs font-semibold uppercase tracking-wide text-muted mb-1';
+---
+
+<Admin title="Stores">
+  <table class="sheet mb-10 w-full text-sm">
+    <thead class="text-left text-muted"><tr><th class="p-2">Store</th><th>Addresses</th><th>Live deals</th><th>Last email</th></tr></thead>
+    <tbody>
+      {
+        stores.map((s) => (
+          <tr class="border-t border-rule align-top">
+            <td class="p-2"><a class="font-semibold underline" href={`#store-${s.id}`}>{s.name}</a>{s.status === 'paused' && <span class="ml-2 text-muted">paused</span>}</td>
+            <td class="py-2 whitespace-pre-line text-muted">{s.addresses ?? '— add one to match its emails'}</td>
+            <td class="py-2">{s.live}</td>
+            <td class="py-2">{s.last_email ? new Date(s.last_email).toLocaleDateString('en-US', { timeZone: 'America/Denver' }) : '—'}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  {
+    [blank, ...stores].map((s) => {
+      const cats = new Set(JSON.parse(s.categories_sold));
+      const cbs = new Set(JSON.parse(s.cannabinoids_sold));
+      return (
+        <details id={s.id ? `store-${s.id}` : 'new-store'} class="sheet mb-4 p-5" open={!s.id && stores.length === 0}>
+          <summary class="cursor-pointer font-bold">{s.id ? `Edit ${s.name}` : '+ Add a store'}</summary>
+          <form method="post" action="/api/admin/stores/" class="mt-4 grid gap-3 md:grid-cols-2">
+            <input type="hidden" name="id" value={s.id} />
+            <label><span class={label}>Name</span><input class={input} name="name" value={s.name} required /></label>
+            <label><span class={label}>Website</span><input class={input} name="website" value={s.website ?? ''} type="url" placeholder="https://" /></label>
+            <label class="md:col-span-2">
+              <span class={label}>Addresses (one per line)</span>
+              <textarea class={input + ' font-mono'} name="addresses" rows="3" placeholder={'vivimu@dailygreendeals.com\n@vivimu.com'}>{s.addresses ?? ''}</textarea>
+              <span class="text-xs text-muted">The signup address on our domain. Optionally the sender's domain with a leading @ as a fallback.</span>
+            </label>
+            <fieldset class="md:col-span-2">
+              <legend class={label}>Categories sold</legend>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm">{categories.map((c) => <label><input type="checkbox" name="categories_sold" value={c.slug} checked={cats.has(c.slug)} /> {c.name}</label>)}</div>
+            </fieldset>
+            <fieldset class="md:col-span-2">
+              <legend class={label}>Cannabinoids sold</legend>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm">{cannabinoids.map((c) => <label><input type="checkbox" name="cannabinoids_sold" value={c.slug} checked={cbs.has(c.slug)} /> {c.name}</label>)}</div>
+            </fieldset>
+            <label class="md:col-span-2"><span class={label}>Description</span><textarea class={input} name="description" rows="2">{s.description ?? ''}</textarea></label>
+            <label><span class={label}>Shipping notes</span><input class={input} name="shipping_notes" value={s.shipping_notes ?? ''} /></label>
+            <label><span class={label}>Free shipping over $</span><input class={input} name="free_shipping_min" value={s.free_shipping_min ?? ''} inputmode="decimal" /></label>
+            <label><span class={label}>Lab results URL</span><input class={input} name="lab_results_url" value={s.lab_results_url ?? ''} type="url" /></label>
+            <label><span class={label}>Status</span><select class={input} name="status"><option selected={s.status === 'active'}>active</option><option selected={s.status === 'paused'}>paused</option></select></label>
+            <div class="md:col-span-2"><button class="btn-primary !py-2">{s.id ? 'Save store' : 'Add store'}</button></div>
+          </form>
+        </details>
+      );
+    })
+  }
+</Admin>

@@ -1,0 +1,13 @@
+---
+import { env } from 'cloudflare:workers';
+import Admin from '../../layouts/Admin.astro';
+import DealForm from '../../components/DealForm.astro';
+import { dealsWithProducts } from '../../lib/admin-queries';
+
+export const prerender = false;
+const live = await dealsWithProducts(env as Env, `d.status = 'approved'`, 'c.name, d.ends_at');
+---
+
+<Admin title={`Live deals (${live.length})`}>
+  {live.length === 0 ? <p class="text-muted">No live deals yet.</p> : <div class="space-y-6">{live.map((x) => <DealForm {...x} returnTo="/admin/deals/" />)}</div>}
+</Admin>

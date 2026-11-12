@@ -1,0 +1,30 @@
+# Hourly: send new store newsletters from info@dailygreendeals.com to the site for deal extraction.
+# Repository secrets needed: IMAP_USER, IMAP_PASS, INGEST_TOKEN. Variable (optional): INGEST_URL.
+name: Poll inbox
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: poll-inbox
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --omit=optional
+      - run: node scripts/poll-inbox.mjs
+        env:
+          IMAP_USER: ${{ secrets.IMAP_USER }}
+          IMAP_PASS: ${{ secrets.IMAP_PASS }}
+          INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
+          INGEST_URL: ${{ vars.INGEST_URL || 'https://dailygreendeals.com/api/ingest/' }}

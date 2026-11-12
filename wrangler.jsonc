@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dailygreendeals",
+  // Our own entry: Astro handles fetch, plus the extraction queue consumer and the nightly cron.
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    // Only this address may use /admin/ (checked against the Cloudflare Access login).
+    "ADMIN_EMAIL": "ryan@untouchablemarketing.com",
+    // Cloudflare Access team domain and the Access application's AUD tag (Zero Trust dashboard).
+    // Fill these in after creating the Access application for dailygreendeals.com/admin*.
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    // Model used to pull deals out of newsletters.
+    "EXTRACT_MODEL": "claude-sonnet-5-5",
+    // Optional: route extraction through Cloudflare AI Gateway, e.g.
+    // https://gateway.ai.cloudflare.com/v1/<account_id>/dgd/anthropic
+    "ANTHROPIC_BASE_URL": "",
+    // Addresses on the domain that are never a store signup (the poller skips mail sent only to these).
+    "NON_STORE_ADDRESSES": "info@dailygreendeals.com"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dgd",
+      // Replace after `npx wrangler d1 create dgd`.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    // Every newsletter exactly as received, so extraction can be re-run any time.
+    { "binding": "RAW_EMAILS", "bucket_name": "dgd-raw-emails" }
+  ],
+  "queues": {
+    "producers": [{ "binding": "EXTRACT_QUEUE", "queue": "dgd-extract" }],
+    "consumers": [
+      { "queue": "dgd-extract", "max_batch_size": 1, "max_retries": 3 }
+    ]
+  },
+  "triggers": {
+    // 09:07 UTC = 2:07am Denver (MST). Expires ended deals and flags stale ones.
+    "crons": ["7 9 * * *"]
+  }
+  // Secrets (npx wrangler secret put NAME; locally in .dev.vars):
+  //   ANTHROPIC_API_KEY  - deal extraction
+  //   INGEST_TOKEN       - shared with the inbox poller (GitHub Actions secret of the same name)
+}

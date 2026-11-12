@@ -1,0 +1,106 @@
+---
+/** One editable deal in the admin, with its source email and actions. */
+import { DEAL_TYPES, SCOPES } from '../lib/extract';
+import { toLocalInput } from '../lib/form';
+
+interface Props {
+  deal: Record<string, any>;
+  products?: Record<string, any>[];
+  returnTo: string;
+}
+const { deal: d, products = [], returnTo } = Astro.props;
+const input = 'w-full rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
+const label = 'block text-xs font-semibold uppercase tracking-wide text-muted mb-1';
+const pending = d.pending_changes ? JSON.parse(d.pending_changes) : null;
+---
+
+<form method="post" action={`/api/admin/deals/${d.id}/`} class="sheet p-5">
+  <input type="hidden" name="return_to" value={returnTo} />
+  <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+    <div>
+      <span class="font-bold">{d.company_name}</span>
+      <span class="ml-2 text-sm text-muted">#{d.id} · {d.status}</span>
+      {d.confidence != null && <span class:list={['ml-2 text-sm', d.confidence < 0.6 ? 'text-alert font-semibold' : 'text-muted']}>confidence {Math.round(d.confidence * 100)}%</span>}
+    </div>
+    {d.source_email_id && <a class="text-sm text-chalk underline" href={`/admin/emails/${d.source_email_id}/`} target="_blank">Source email: {d.email_subject ?? 'view'}</a>}
+  </div>
+
+  {d.needs_review && <p class="mb-3 bg-pencil-soft px-3 py-2 text-sm">{d.needs_review}</p>}
+  {
+    pending && (
+      <div class="mb-4 border border-pencil bg-pencil-soft/40 p-3 text-sm">
+        <p class="font-semibold">A newer email reports changes:</p>
+        <ul class="mt-1 list-disc pl-5">
+          {Object.entries(pending)
+            .filter(([k, v]) => k !== 'source_email_id' && k !== 'confidence' && String(v ?? '') !== String(d[k] ?? ''))
+            .map(([k, v]) => (
+              <li>
+                <span class="font-mono">{k}</span>: {String(d[k] ?? '—')} → <strong>{String(v ?? '—')}</strong>
+              </li>
+            ))}
+        </ul>
+        <div class="mt-2 flex gap-2">
+          <button class="btn-primary !py-1.5 !px-3 text-sm" name="action" value="apply_changes">Apply changes</button>
+          <button class="btn-quiet !py-1.5 !px-3 text-sm" name="action" value="dismiss_changes">Dismiss</button>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="grid gap-3 md:grid-cols-4">
+    <label class="md:col-span-2"><span class={label}>Title</span><input class={input} name="title" value={d.title} required /></label>
+    <label><span class={label}>Scope</span>
+      <select class={input} name="scope">{SCOPES.map((s) => <option selected={d.scope === s}>{s}</option>)}</select>
+    </label>
+    <label><span class={label}>Type</span>
+      <select class={input} name="deal_type">{DEAL_TYPES.map((t) => <option selected={d.deal_type === t}>{t}</option>)}</select>
+    </label>
+    <label><span class={label}>% off</span><input class={input} name="value_pct" value={d.value_pct ?? ''} inputmode="decimal" /></label>
+    <label><span class={label}>$ off</span><input class={input} name="value_amount" value={d.value_amount ?? ''} inputmode="decimal" /></label>
+    <label class="md:col-span-2"><span class={label}>Offer in words</span><input class={input} name="value_text" value={d.value_text ?? ''} /></label>
+    <label><span class={label}>Code</span><input class={input + ' font-mono'} name="code" value={d.code ?? ''} /></label>
+    <label class="md:col-span-3"><span class={label}>Link</span><input class={input} name="url" value={d.url ?? ''} type="url" /></label>
+    <label><span class={label}>Starts (Denver)</span><input class={input} name="starts_at" type="datetime-local" value={toLocalInput(d.starts_at)} /></label>
+    <label><span class={label}>Ends (Denver)</span><input class={input} name="ends_at" type="datetime-local" value={toLocalInput(d.ends_at)} /></label>
+    <label><span class={label}>Min order $</span><input class={input} name="min_order" value={d.min_order ?? ''} inputmode="decimal" /></label>
+    <div class="flex flex-col justify-end gap-1 text-sm">
+      <label><input type="checkbox" name="is_ongoing" checked={!!d.is_ongoing} /> Ongoing</label>
+      <label><input type="checkbox" name="featured" checked={!!d.featured} /> Featured</label>
+    </div>
+    <label class="md:col-span-3"><span class={label}>Restrictions</span><textarea class={input} name="restrictions" rows="2">{d.restrictions ?? ''}</textarea></label>
+    <div class="flex flex-col justify-end gap-1 text-sm">
+      <label><input type="checkbox" name="new_customers_only" checked={!!d.new_customers_only} /> New customers only</label>
+      <label><input type="checkbox" name="subscribe_only" checked={!!d.subscribe_only} /> Subscriptions only</label>
+    </div>
+  </div>
+
+  {
+    products.length > 0 && (
+      <table class="mt-4 w-full text-sm">
+        <thead class="text-left text-muted">
+          <tr><th>Product</th><th>Category</th><th>Cannabinoids</th><th>mg/unit</th><th>Pack</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          {products.map((p) => (
+            <tr class="border-t border-rule">
+              <td>{p.product_url ? <a class="underline" href={p.product_url} target="_blank">{p.product_name}</a> : p.product_name}</td>
+              <td>{p.category_slug ?? '—'}</td>
+              <td>{JSON.parse(p.cannabinoids).map((c: any) => `${c.slug.toUpperCase()}${c.mg ? ` ${c.mg}mg` : ''}`).join(', ') || '—'}</td>
+              <td>{p.mg_per_unit ?? '—'}</td>
+              <td>{p.units_per_pack ?? '—'}</td>
+              <td>{p.price_deal != null ? `$${p.price_deal}` : '—'}{p.price_regular != null && <span class="text-muted line-through ml-1">${p.price_regular}</span>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+
+  <div class="mt-5 flex flex-wrap gap-2">
+    {d.status === 'draft' && <button class="btn-primary !py-2" name="action" value="approve">Approve</button>}
+    <button class="btn-quiet !py-2" name="action" value="save">Save</button>
+    {d.status === 'draft' && <button class="btn-quiet !py-2 text-alert" name="action" value="reject">Reject</button>}
+    {d.status === 'approved' && d.needs_review?.startsWith('Not seen') && <button class="btn-quiet !py-2" name="action" value="keep">Still running</button>}
+    {d.status === 'approved' && <button class="btn-quiet !py-2 text-alert" name="action" value="expire">Mark ended</button>}
+  </div>
+</form>

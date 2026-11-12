@@ -1,0 +1,71 @@
+---
+import { env } from 'cloudflare:workers';
+import Admin from '../../layouts/Admin.astro';
+import DealForm from '../../components/DealForm.astro';
+import { dealsWithProducts } from '../../lib/admin-queries';
+
+export const prerender = false;
+const e = env as Env;
+
+const drafts = await dealsWithProducts(e, `d.status = 'draft'`, 'd.confidence DESC, d.created_at');
+const flagged = await dealsWithProducts(e, `d.status = 'approved' AND d.needs_review IS NOT NULL`, 'd.updated_at DESC');
+const confirmations = (
+  await e.DB.prepare(
+    `SELECT e.id, e.subject, e.confirmation_url, c.name AS company FROM inbound_emails e LEFT JOIN companies c ON c.id = e.company_id
+     WHERE e.confirmation_url IS NOT NULL ORDER BY e.id DESC`,
+  ).all<Record<string, any>>()
+).results;
+const counts = await e.DB.prepare(
+  `SELECT (SELECT COUNT(*) FROM inbound_emails WHERE status = 'unmatched') AS unmatched,
+          (SELECT COUNT(*) FROM inbound_emails WHERE status = 'failed') AS failed`,
+).first<{ unmatched: number; failed: number }>();
+---
+
+<Admin title="Review queue">
+  {
+    (counts!.unmatched > 0 || counts!.failed > 0) && (
+      <p class="mb-6 bg-pencil-soft px-4 py-3">
+        <a class="underline" href="/admin/inbox/">
+          {counts!.unmatched} unmatched and {counts!.failed} failed emails in the inbox
+        </a>
+        . Unmatched emails need their address added to a store.
+      </p>
+    )
+  }
+
+  {
+    confirmations.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-3 text-xl">Subscriptions to confirm</h2>
+        <ul class="sheet">
+          {confirmations.map((c) => (
+            <li class="sheet-row">
+              <span>
+                <strong>{c.company ?? 'Unknown store'}</strong> · {c.subject}
+              </span>
+              <span class="flex gap-2">
+                <a class="btn-primary !py-1.5 !px-3 text-sm" href={c.confirmation_url} target="_blank" rel="noreferrer">
+                  Open link
+                </a>
+                <form method="post" action={`/api/admin/emails/${c.id}/`}>
+                  <input type="hidden" name="return_to" value="/admin/" />
+                  <button class="btn-quiet !py-1.5 !px-3 text-sm" name="action" value="confirmed">Done</button>
+                </form>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="mb-10">
+    <h2 class="mb-3 text-xl">New deals to approve ({drafts.length})</h2>
+    {drafts.length === 0 ? <p class="text-muted">Nothing waiting.</p> : <div class="space-y-6">{drafts.map((x) => <DealForm {...x} returnTo="/admin/" />)}</div>}
+  </section>
+
+  <section>
+    <h2 class="mb-3 text-xl">Live deals to check ({flagged.length})</h2>
+    {flagged.length === 0 ? <p class="text-muted">Nothing flagged.</p> : <div class="space-y-6">{flagged.map((x) => <DealForm {...x} returnTo="/admin/" />)}</div>}
+  </section>
+</Admin>
