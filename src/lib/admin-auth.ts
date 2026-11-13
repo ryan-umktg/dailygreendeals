@@ -8,8 +8,9 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 let jwks: ReturnType<typeof createRemoteJWKSet> | undefined;
 
 export async function adminEmail(request: Request, env: Env): Promise<string | null> {
-  const url = new URL(request.url);
-  if (env.DEV_ADMIN_BYPASS === '1' && (url.hostname === 'localhost' || url.hostname === '127.0.0.1')) return env.ADMIN_EMAIL;
+  // Local development only: DEV_ADMIN_BYPASS lives in .dev.vars, which is never deployed.
+  // (wrangler dev rewrites the hostname to the route's, so a localhost check doesn't work here.)
+  if (env.DEV_ADMIN_BYPASS === '1') return env.ADMIN_EMAIL;
 
   const team = env.ACCESS_TEAM_DOMAIN;
   const aud = env.ACCESS_AUD;

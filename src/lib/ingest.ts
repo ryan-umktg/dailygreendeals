@@ -116,3 +116,36 @@ export async function requeue(env: Env, inboundId: number) {
   await env.EXTRACT_QUEUE.send({ inboundId } satisfies ExtractMessage);
   return { ok: true as const };
 }
+
+/** Link unmatched emails to a store that was just added or edited, and queue them for extraction. */
+export async function matchWaitingEmails(env: Env, companyId: number, addresses: string[]) {
+  if (!addresses.length) return 0;
+  const set = new Set(addresses);
+  const waiting = (
+    await env.DB.prepare(`SELECT id, alias, from_address FROM inbound_emails WHERE status = 'unmatched'`).all<{
+      id: number;
+      alias: string | null;
+      from_address: string | null;
+    }>()
+  ).results;
+  const ids = waiting
+    .filter((w) => {
+      if (w.alias && set.has(w.alias)) return true;
+      const domain = lower(w.from_address).split('@')[1];
+      if (!domain) return false;
+      return set.has(`@${domain}`) || set.has(`@${domain.split('.').slice(-2).join('.')}`);
+    })
+    .map((w) => w.id);
+  if (!ids.length) return 0;
+
+  for (let i = 0; i < ids.length; i += 90) {
+    const chunk = ids.slice(i, i + 90);
+    await env.DB.prepare(
+      `UPDATE inbound_emails SET status = 'received', company_id = ?, error = NULL WHERE id IN (${chunk.map(() => '?').join(',')})`,
+    )
+      .bind(companyId, ...chunk)
+      .run();
+    await env.EXTRACT_QUEUE.sendBatch(chunk.map((inboundId) => ({ body: { inboundId } satisfies ExtractMessage })));
+  }
+  return ids.length;
+}

@@ -2,7 +2,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { back, fall, fnum, fstr, slugify } from '../../../lib/form';
-import { requeue } from '../../../lib/ingest';
+import { matchWaitingEmails } from '../../../lib/ingest';
 
 export const prerender = false;
 
@@ -36,6 +36,8 @@ export const POST: APIRoute = async ({ request }) => {
       .run();
     companyId = id;
   } else {
+    const existing = await e.DB.prepare('SELECT id FROM companies WHERE slug = ?').bind(slug).first<{ id: number }>();
+    if (existing) return new Response(`A store called "${name}" already exists. Edit it on the Stores page instead.`, { status: 409 });
     const row = await e.DB.prepare(
       `INSERT INTO companies (slug, name, website, description, cannabinoids_sold, categories_sold, shipping_notes, free_shipping_min, lab_results_url, status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
@@ -67,8 +69,8 @@ export const POST: APIRoute = async ({ request }) => {
   ]);
 
   // Emails that arrived before this store existed: match and extract them now.
-  const waiting = (await e.DB.prepare(`SELECT id FROM inbound_emails WHERE status = 'unmatched' ORDER BY id`).all<{ id: number }>()).results;
-  for (const w of waiting) await requeue(e, w.id);
+  // A fixed handful of calls however many are waiting (the free Workers plan allows 50 per request).
+  await matchWaitingEmails(e, companyId, addresses);
 
   return back('/admin/stores/');
 };
