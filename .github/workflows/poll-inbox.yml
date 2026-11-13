@@ -5,7 +5,12 @@ name: Poll inbox
 on:
   schedule:
     - cron: '23 * * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: 'How many days back to look (default 30)'
+        required: false
+        default: '30'
 
 concurrency:
   group: poll-inbox
@@ -14,7 +19,7 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,3 +33,6 @@ jobs:
           IMAP_PASS: ${{ secrets.IMAP_PASS }}
           INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
           INGEST_URL: ${{ vars.INGEST_URL || 'https://new.dailygreendeals.com/api/ingest/' }}
+          NON_STORE_ADDRESSES: info@dailygreendeals.com,kimberly@dailygreendeals.com
+          SINCE_DAYS: ${{ inputs.since_days || '30' }}
+          TIME_BUDGET_MINUTES: '12'

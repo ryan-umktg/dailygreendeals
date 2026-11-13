@@ -36,17 +36,20 @@ export function findAlias(env: Env, candidates: (string | null | undefined)[]): 
   return null;
 }
 
-/** Match a store by its signup address first, then by the sender's domain (stored as "@vivimu.com"). */
+/**
+ * Match a store by sender domain first (stored as "@vivimu.com"; @email.vivimu.com also matches),
+ * then by the store-specific signup address. Shared addresses (NON_STORE_ADDRESSES, e.g. info@ and
+ * kimberly@) never identify a store: many brands mail them.
+ */
 export async function findCompanyId(env: Env, alias: string | null, fromAddress: string | null) {
   const keys: string[] = [];
-  if (alias) keys.push(alias);
   const domain = lower(fromAddress).split('@')[1];
   if (domain) {
     keys.push(`@${domain}`);
-    // Also try the parent domain, so @email.vivimu.com matches @vivimu.com.
     const parts = domain.split('.');
     if (parts.length > 2) keys.push(`@${parts.slice(-2).join('.')}`);
   }
+  if (alias && !nonStoreAddresses(env).has(lower(alias))) keys.push(lower(alias));
   for (const key of keys) {
     const row = await env.DB.prepare('SELECT company_id FROM email_sources WHERE address = ?').bind(key).first<{ company_id: number }>();
     if (row) return row.company_id;
@@ -120,7 +123,8 @@ export async function requeue(env: Env, inboundId: number) {
 /** Link unmatched emails to a store that was just added or edited, and queue them for extraction. */
 export async function matchWaitingEmails(env: Env, companyId: number, addresses: string[]) {
   if (!addresses.length) return 0;
-  const set = new Set(addresses);
+  const skip = nonStoreAddresses(env);
+  const set = new Set(addresses.filter((a) => !skip.has(a)));
   const waiting = (
     await env.DB.prepare(`SELECT id, alias, from_address FROM inbound_emails WHERE status = 'unmatched'`).all<{
       id: number;
@@ -130,10 +134,9 @@ export async function matchWaitingEmails(env: Env, companyId: number, addresses:
   ).results;
   const ids = waiting
     .filter((w) => {
-      if (w.alias && set.has(w.alias)) return true;
       const domain = lower(w.from_address).split('@')[1];
-      if (!domain) return false;
-      return set.has(`@${domain}`) || set.has(`@${domain.split('.').slice(-2).join('.')}`);
+      if (domain && (set.has(`@${domain}`) || set.has(`@${domain.split('.').slice(-2).join('.')}`))) return true;
+      return !!w.alias && set.has(lower(w.alias));
     })
     .map((w) => w.id);
   if (!ids.length) return 0;

@@ -4,21 +4,12 @@
  */
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
-import { ingestRaw } from '../../lib/ingest';
+import { ingestRaw } from '../../../lib/ingest';
+import { tokenOk } from '../../../lib/ingest-auth';
 
 export const prerender = false;
 
 const MAX_BYTES = 15 * 1024 * 1024;
-
-function tokenOk(header: string | null, expected: string | undefined) {
-  if (!expected || !header?.startsWith('Bearer ')) return false;
-  const a = new TextEncoder().encode(header.slice(7));
-  const b = new TextEncoder().encode(expected);
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
-  return diff === 0;
-}
 
 export const POST: APIRoute = async ({ request, url }) => {
   const e = env as Env;

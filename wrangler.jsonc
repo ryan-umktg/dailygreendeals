@@ -21,8 +21,9 @@
     // Optional: route extraction through Cloudflare AI Gateway, e.g.
     // https://gateway.ai.cloudflare.com/v1/<account_id>/dgd/anthropic
     "ANTHROPIC_BASE_URL": "",
-    // Addresses on the domain that are never a store signup (the poller skips mail sent only to these).
-    "NON_STORE_ADDRESSES": "info@dailygreendeals.com"
+    // Shared signup addresses used for many stores. Mail to these is matched by sender domain
+    // (@store.com), never by address. Keep in sync with NON_STORE_ADDRESSES in the poll-inbox workflow.
+    "NON_STORE_ADDRESSES": "info@dailygreendeals.com,kimberly@dailygreendeals.com"
   },
   "d1_databases": [
     {

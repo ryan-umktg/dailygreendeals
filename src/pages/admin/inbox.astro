@@ -59,6 +59,7 @@ const summary = await e.DB.prepare(
 const fmt = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—';
 const tone: Record<string, string> = { unmatched: 'text-alert', failed: 'text-alert', extracted: 'text-spruce', received: 'text-chalk', ignored: 'text-muted' };
+const shared = new Set(String(e.NON_STORE_ADDRESSES ?? '').split(',').map((a) => a.trim().toLowerCase()));
 const field = 'rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
 const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
 ---
@@ -119,9 +120,14 @@ const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
 
   <div class="mb-4 flex items-center justify-between text-sm">
     <span class="text-muted">{rows.length === 300 ? 'Showing the first 300 matches' : `${rows.length} ${rows.length === 1 ? 'email' : 'emails'}`}</span>
-    <form method="post" action="/api/admin/emails/retry-failed/">
-      <button class="btn-quiet !py-1.5 !px-3 text-sm">Re-run all failed extractions</button>
-    </form>
+    <span class="flex gap-2">
+      <form method="post" action="/api/admin/emails/ignore-old-unmatched/">
+        <button class="btn-quiet !py-1.5 !px-3 text-sm">Ignore unmatched emails older than 30 days</button>
+      </form>
+      <form method="post" action="/api/admin/emails/retry-failed/">
+        <button class="btn-quiet !py-1.5 !px-3 text-sm">Re-run all failed extractions</button>
+      </form>
+    </span>
   </div>
   <table class="sheet w-full text-sm">
     <thead class="text-left text-muted">
@@ -134,10 +140,10 @@ const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
             <td class="p-2 whitespace-nowrap">{fmt(r.sent_at ?? r.received_at)}<div class="text-xs text-muted">in {fmt(r.received_at)}</div></td>
             <td class="py-2">
               <div class="font-semibold">{r.company ?? '—'}</div>
-              <div class="text-muted">{r.alias ?? `info@ · from ${r.from_address ?? '?'}`}</div>
+              <div class="text-muted">{r.alias && !shared.has(r.alias) ? r.alias : `${r.alias ?? 'shared address'} · from ${r.from_address ?? '?'}`}</div>
               {r.status === 'unmatched' && (
                 <div class="text-xs text-alert">
-                  Add <span class="font-mono">{r.alias ?? `@${String(r.from_address ?? '').split('@')[1]?.split('.').slice(-2).join('.') ?? ''}`}</span> to a store
+                  Add <span class="font-mono">{r.alias && !shared.has(r.alias) ? r.alias : `@${String(r.from_address ?? '').split('@')[1]?.split('.').slice(-2).join('.') ?? ''}`}</span> to a store
                 </div>
               )}
             </td>

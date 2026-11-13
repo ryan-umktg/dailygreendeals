@@ -52,6 +52,13 @@ export const POST: APIRoute = async ({ request }) => {
     .split(/[\s,]+/)
     .map((a) => a.trim().toLowerCase())
     .filter((a) => /^[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$/.test(a));
+  const shared = String(e.NON_STORE_ADDRESSES ?? '').split(',').map((a) => a.trim().toLowerCase()).filter((a) => addresses.includes(a));
+  if (shared.length) {
+    return new Response(
+      `${shared.join(', ')} is a shared signup address used for many stores, so it can't identify one store. Add the store's sender domain instead (e.g. @vivimu.com).`,
+      { status: 400 },
+    );
+  }
   const taken = addresses.length
     ? (
         await e.DB.prepare(
