@@ -17,6 +17,9 @@ const tone: Record<string, string> = { unmatched: 'text-alert', failed: 'text-al
 ---
 
 <Admin title="Inbox">
+  <form method="post" action="/api/admin/emails/retry-failed/" class="mb-4">
+    <button class="btn-quiet !py-1.5 !px-3 text-sm">Re-run all failed extractions</button>
+  </form>
   <p class="mb-4 flex gap-3 text-sm">
     {['', 'unmatched', 'failed', 'received', 'extracted', 'ignored'].map((s) => <a class:list={['underline', (status ?? '') === s && 'font-bold']} href={s ? `?status=${s}` : '?'}>{s || 'all'}</a>)}
   </p>

@@ -65,6 +65,23 @@ export type KnownDeal = {
 const num = { type: ['number', 'null'] };
 const str = { type: ['string', 'null'] };
 
+/**
+ * Structured outputs need a strict schema: every object closed with additionalProperties: false,
+ * and nullable fields written as anyOf rather than a type array.
+ */
+function strict(node: any): any {
+  if (Array.isArray(node)) return node.map(strict);
+  if (!node || typeof node !== 'object') return node;
+  const out: any = {};
+  for (const [k, v] of Object.entries(node)) out[k] = k === 'properties' ? Object.fromEntries(Object.entries(v as object).map(([pk, pv]) => [pk, strict(pv)])) : strict(v);
+  if (Array.isArray(out.type)) {
+    const { type, description, ...rest } = out;
+    return { ...(description ? { description } : {}), anyOf: type.map((t: string) => (t === 'null' ? { type: 'null' } : { type: t, ...rest })) };
+  }
+  if (out.type === 'object') out.additionalProperties = false;
+  return out;
+}
+
 const TOOL = {
   name: 'record_deals',
   description: 'Record every deal or promotion offered in this newsletter.',
@@ -237,7 +254,7 @@ ${known}
 Category slugs: ${i.categories.join(', ')}
 Cannabinoid slugs: ${i.cannabinoids.join(', ')}
 
-Record every distinct offer in the email with the record_deals tool. Rules:
+Return every distinct offer in the email as JSON matching the schema. Rules:
 - Only real offers: a discount, code, free shipping threshold, BOGO, bundle price, free gift or price drop. Not loyalty-program explainers or products at full price.
 - One entry per distinct offer. A sitewide sale and a separate gummy bundle are two entries.
 - Compare against the known deals. Same code or same offer = "same" (or "update" if dates, value or terms changed), with its existing_deal_id.
@@ -252,6 +269,8 @@ ${i.links.join('\n') || '(none)'}
 Email text:
 ${i.text}`;
 }
+
+const OUTPUT_SCHEMA = strict(TOOL.input_schema);
 
 async function callModel(env: Env, input: CallInput, withImages: boolean) {
   const content: unknown[] = [];
@@ -269,9 +288,11 @@ async function callModel(env: Env, input: CallInput, withImages: boolean) {
     },
     body: JSON.stringify({
       model: env.EXTRACT_MODEL || 'claude-sonnet-5-5',
-      max_tokens: 4096,
-      tools: [TOOL],
-      tool_choice: { type: 'tool', name: TOOL.name },
+      // Newer models think before answering, which uses part of this budget.
+      max_tokens: 16000,
+      // Structured output: the reply is JSON matching the schema. (Forcing a tool call with
+      // tool_choice is rejected by current models.)
+      output_config: { format: { type: 'json_schema', schema: OUTPUT_SCHEMA } },
       messages: [{ role: 'user', content }],
     }),
   });
@@ -281,10 +302,19 @@ export async function extractDeals(env: Env, input: CallInput): Promise<Extracti
   if (!env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is not set');
   let res = await callModel(env, input, input.images.length > 0);
   // An image the API can't download fails the whole request; try again with text only.
-  if (res.status === 400 && input.images.length) res = await callModel(env, input, false);
+  if (res.status === 400 && input.images.length) {
+    const body = await res.clone().text();
+    if (/image|url|media|fetch|download/i.test(body)) res = await callModel(env, input, false);
+  }
   if (!res.ok) throw new Error(`Extraction API ${res.status}: ${(await res.text()).slice(0, 500)}`);
-  const data = (await res.json()) as { content: { type: string; name?: string; input?: Extraction }[] };
-  const call = data.content.find((c) => c.type === 'tool_use' && c.name === TOOL.name);
-  if (!call?.input) throw new Error('Extraction returned no tool call');
-  return { kind: call.input.kind ?? 'no_deals', confirmation_url: call.input.confirmation_url ?? null, deals: call.input.deals ?? [] };
+  const data = (await res.json()) as { stop_reason?: string; content: { type: string; text?: string }[] };
+  const text = data.content.filter((c) => c.type === 'text').map((c) => c.text ?? '').join('').trim();
+  if (!text) throw new Error(`Extraction returned no JSON (stop_reason: ${data.stop_reason ?? 'unknown'})`);
+  let parsed: Extraction;
+  try {
+    parsed = JSON.parse(text) as Extraction;
+  } catch {
+    throw new Error(`Extraction returned invalid JSON (stop_reason: ${data.stop_reason ?? 'unknown'}): ${text.slice(0, 200)}`);
+  }
+  return { kind: parsed.kind ?? 'no_deals', confirmation_url: parsed.confirmation_url ?? null, deals: parsed.deals ?? [] };
 }
