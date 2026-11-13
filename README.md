@@ -5,7 +5,7 @@ Curated deals from online CBD and hemp stores. Astro on Cloudflare Workers, same
 ## How deals get in
 
 1. Ryan signs up for each store's newsletter with its own address, e.g. `vivimu@dailygreendeals.com`. The `info@` catch-all on PrivateEmail receives them all.
-2. **Inbox poller** (`scripts/poll-inbox.mjs`, run hourly by `.github/workflows/poll-inbox.yml`) reads `info@` over IMAP and posts each store newsletter to `POST /api/ingest/`. Mail sent only to `info@` is left alone.
+2. **Inbox poller** (`scripts/poll-inbox.mjs`, run hourly by `.github/workflows/poll-inbox.yml`) reads `info@` over IMAP and posts each store newsletter to `POST /api/ingest/`. That's mail sent to a store address, plus mailing-list mail (with a `List-Unsubscribe` header) sent to `info@` itself, which is matched to a store by sender domain (`@store.com`). Ordinary mail to `info@` is left alone.
 3. **Ingest** stores the raw email in R2, records it in `inbound_emails` and matches it to a store by address. Matched emails go on the `dgd-extract` queue; the poller then moves them to the `Processed` folder. Unmatched ones stay in the inbox and show in `/admin/inbox/`.
 4. **Extraction** (queue consumer in `src/worker.ts` → `src/lib/process.ts`) sends the email text, links and main images, plus the store's current deals, to Claude. Each offer comes back as `new` (draft deal), `same` (bumps `last_seen_at`) or `update` (overwrites a draft, or queues changes on a live deal for approval).
 5. **Review** at `/admin/`: approve, edit or reject drafts; apply or dismiss changes to live deals; open confirmation links.

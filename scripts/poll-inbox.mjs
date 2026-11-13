@@ -14,8 +14,11 @@
  *   IMAP_PORT      default 993
  *   DRY_RUN=1      list what would be sent, change nothing
  *
- * Which emails count: anything sent to an address on dailygreendeals.com other than the
- * NON_STORE_ADDRESSES list (info@ by default). Mail sent only to info@ is left alone.
+ * Which emails count:
+ *  - anything sent to a store address on dailygreendeals.com (not in NON_STORE_ADDRESSES, i.e. not info@);
+ *  - mail sent to info@ itself, but only if it's a mailing-list email (has a List-Unsubscribe header).
+ *    Those are matched to a store by sender domain (add "@store.com" to the store in /admin/stores/).
+ * Ordinary one-to-one mail to info@ (no List-Unsubscribe) is never touched.
  * Emails the site can't match to a store yet are stored there and left in the inbox; they're skipped
  * on later runs because the site recognises them by Message-ID.
  */
@@ -74,20 +77,23 @@ try {
   try {
     // Collect first, then act: moving messages while iterating a fetch confuses some servers.
     const items = [];
-    for await (const msg of client.fetch('1:*', { uid: true, envelope: true, headers: ['delivered-to', 'x-original-to', 'envelope-to'] })) {
+    for await (const msg of client.fetch('1:*', { uid: true, envelope: true, headers: ['delivered-to', 'x-original-to', 'envelope-to', 'list-unsubscribe'] })) {
       stats.seen++;
-      const alias = storeAlias(msg.envelope ?? {}, msg.headers?.toString() ?? '');
-      if (!alias) {
+      const headersText = msg.headers?.toString() ?? '';
+      const alias = storeAlias(msg.envelope ?? {}, headersText);
+      // Newsletters signed up with info@ itself: only bulk mail, which always carries List-Unsubscribe.
+      const isNewsletter = /^list-unsubscribe:/im.test(headersText);
+      if (!alias && !isNewsletter) {
         stats.skipped++;
         continue;
       }
-      items.push({ uid: msg.uid, alias, subject: msg.envelope?.subject ?? '' });
+      items.push({ uid: msg.uid, alias, from: msg.envelope?.from?.[0]?.address ?? '', subject: msg.envelope?.subject ?? '' });
     }
 
     const toMove = [];
     for (const item of items) {
       if (DRY) {
-        console.log(`[dry run] ${item.alias}  ${item.subject}`);
+        console.log(`[dry run] ${item.alias ?? `info@ from ${item.from}`}  ${item.subject}`);
         continue;
       }
       const { content } = await client.download(String(item.uid), undefined, { uid: true });
@@ -96,7 +102,7 @@ try {
       const raw = Buffer.concat(chunks);
 
       const url = new URL(process.env.INGEST_URL);
-      url.searchParams.set('alias', item.alias);
+      if (item.alias) url.searchParams.set('alias', item.alias);
       const res = await fetch(url, {
         method: 'POST',
         headers: { authorization: `Bearer ${process.env.INGEST_TOKEN}`, 'content-type': 'message/rfc822' },
@@ -105,14 +111,17 @@ try {
       const body = await res.json().catch(() => ({}));
       if (!res.ok || !body.ok) {
         stats.failed++;
-        console.error(`Failed (${res.status}) ${item.alias} "${item.subject}": ${body.error ?? ''}`);
+        console.error(`Failed (${res.status}) ${item.alias ?? item.from} "${item.subject}": ${body.error ?? ''}`);
         continue;
       }
       stats.sent++;
       stats[body.status] = (stats[body.status] ?? 0) + 1;
       // Matched (or already stored and matched before): file it. Unmatched stays in the inbox for a person to see.
       if (body.status === 'queued' || (body.status === 'duplicate' && body.matched)) toMove.push(item.uid);
-      if (body.status === 'unmatched') console.log(`Unmatched: ${item.alias} "${item.subject}" (add this address to a store in /admin/stores/)`);
+      if (body.status === 'unmatched') {
+        const hint = item.alias ?? `@${(String(item.from).split('@')[1] ?? '').split('.').slice(-2).join('.')}`;
+        console.log(`Unmatched: ${item.alias ?? `info@ from ${item.from}`} "${item.subject}" (add ${hint} to a store in /admin/stores/)`);
+      }
     }
 
     if (toMove.length) await client.messageMove(toMove.join(','), PROCESSED, { uid: true });

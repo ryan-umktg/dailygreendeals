@@ -134,7 +134,12 @@ const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
             <td class="p-2 whitespace-nowrap">{fmt(r.sent_at ?? r.received_at)}<div class="text-xs text-muted">in {fmt(r.received_at)}</div></td>
             <td class="py-2">
               <div class="font-semibold">{r.company ?? '—'}</div>
-              <div class="text-muted">{r.alias ?? r.from_address}</div>
+              <div class="text-muted">{r.alias ?? `info@ · from ${r.from_address ?? '?'}`}</div>
+              {r.status === 'unmatched' && (
+                <div class="text-xs text-alert">
+                  Add <span class="font-mono">{r.alias ?? `@${String(r.from_address ?? '').split('@')[1]?.split('.').slice(-2).join('.') ?? ''}`}</span> to a store
+                </div>
+              )}
             </td>
             <td class="py-2"><a class="underline" href={`/admin/emails/${r.id}/`}>{r.subject ?? '(no subject)'}</a>{r.error && <div class="text-alert">{r.error}</div>}</td>
             <td class:list={['py-2 font-semibold', tone[r.status]]}>{r.status}{r.kind && r.kind !== 'deals' && <div class="font-normal text-muted">{r.kind}</div>}</td>
