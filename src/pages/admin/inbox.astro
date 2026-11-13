@@ -3,35 +3,135 @@ import { env } from 'cloudflare:workers';
 import Admin from '../../layouts/Admin.astro';
 
 export const prerender = false;
-const status = Astro.url.searchParams.get('status');
+const e = env as Env;
+const p = Astro.url.searchParams;
+const f = {
+  q: (p.get('q') ?? '').trim(),
+  store: p.get('store') ?? '',
+  status: p.get('status') ?? '',
+  kind: p.get('kind') ?? '',
+  since: p.get('since') ?? '',
+  sort: p.get('sort') === 'received' ? 'received' : 'sent',
+};
+
+const where: string[] = [];
+const binds: (string | number)[] = [];
+if (f.q) {
+  where.push(`(e.subject LIKE ? OR e.alias LIKE ? OR e.from_address LIKE ?)`);
+  binds.push(`%${f.q}%`, `%${f.q}%`, `%${f.q}%`);
+}
+if (f.store === 'none') where.push('e.company_id IS NULL');
+else if (f.store) {
+  where.push('e.company_id = ?');
+  binds.push(Number(f.store));
+}
+if (f.status) {
+  where.push('e.status = ?');
+  binds.push(f.status);
+}
+if (f.kind === 'with_deals') where.push('e.deals_found > 0');
+else if (f.kind) {
+  where.push('e.kind = ?');
+  binds.push(f.kind);
+}
+const sinceHours: Record<string, number> = { '24h': 24, '3d': 72, '7d': 168, '30d': 720 };
+if (sinceHours[f.since]) {
+  where.push('COALESCE(e.sent_at, e.received_at) >= ?');
+  binds.push(new Date(Date.now() - sinceHours[f.since] * 3600_000).toISOString());
+}
+const order = f.sort === 'received' ? 'e.received_at DESC, e.id DESC' : 'COALESCE(e.sent_at, e.received_at) DESC, e.id DESC';
+
 const rows = (
-  await (env as Env).DB.prepare(
+  await e.DB.prepare(
     `SELECT e.*, c.name AS company FROM inbound_emails e LEFT JOIN companies c ON c.id = e.company_id
-     ${status ? 'WHERE e.status = ?' : ''} ORDER BY e.id DESC LIMIT 300`,
+     ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY ${order} LIMIT 300`,
   )
-    .bind(...(status ? [status] : []))
+    .bind(...binds)
     .all<Record<string, any>>()
 ).results;
-const fmt = (iso: string) => new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const stores = (await e.DB.prepare('SELECT id, name FROM companies ORDER BY name').all<{ id: number; name: string }>()).results;
+const summary = await e.DB.prepare(
+  `SELECT MAX(received_at) AS last_received, COUNT(*) AS total,
+     SUM(status = 'unmatched') AS unmatched, SUM(status = 'failed') AS failed, SUM(status = 'received') AS pending
+   FROM inbound_emails`,
+).first<{ last_received: string | null; total: number; unmatched: number; failed: number; pending: number }>();
+
+const fmt = (iso: string | null) =>
+  iso ? new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—';
 const tone: Record<string, string> = { unmatched: 'text-alert', failed: 'text-alert', extracted: 'text-spruce', received: 'text-chalk', ignored: 'text-muted' };
+const field = 'rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
+const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
 ---
 
 <Admin title="Inbox">
-  <form method="post" action="/api/admin/emails/retry-failed/" class="mb-4">
-    <button class="btn-quiet !py-1.5 !px-3 text-sm">Re-run all failed extractions</button>
-  </form>
-  <p class="mb-4 flex gap-3 text-sm">
-    {['', 'unmatched', 'failed', 'received', 'extracted', 'ignored'].map((s) => <a class:list={['underline', (status ?? '') === s && 'font-bold']} href={s ? `?status=${s}` : '?'}>{s || 'all'}</a>)}
+  <p class="mb-4 text-sm text-muted">
+    {summary!.total} emails · last one brought in {fmt(summary!.last_received)} · {summary!.pending ?? 0} waiting for extraction ·
+    {summary!.unmatched ?? 0} unmatched · {summary!.failed ?? 0} failed. The inbox job runs hourly; run "Poll inbox" in GitHub Actions to check now.
   </p>
+
+  <form method="get" class="sheet mb-4 flex flex-wrap items-end gap-3 p-4 text-sm">
+    <label class="flex-1 min-w-48">
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Search</span>
+      <input class={field + ' w-full'} name="q" value={f.q} placeholder="Subject, address or sender" />
+    </label>
+    <label>
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Store</span>
+      <select class={field} name="store">
+        <option value="">All stores</option>
+        <option value="none" selected={f.store === 'none'}>No store (unmatched)</option>
+        {stores.map((s) => <option value={s.id} selected={f.store === String(s.id)}>{s.name}</option>)}
+      </select>
+    </label>
+    <label>
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Status</span>
+      <select class={field} name="status">
+        {[['', 'Any status'], ['received', 'Waiting'], ['extracted', 'Extracted'], ['unmatched', 'Unmatched'], ['failed', 'Failed'], ['ignored', 'Ignored']].map(([v, l]) => (
+          <option value={v} selected={f.status === v}>{l}</option>
+        ))}
+      </select>
+    </label>
+    <label>
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Result</span>
+      <select class={field} name="kind">
+        {[['', 'Any result'], ['with_deals', 'Found new deals'], ['deals', 'Had deals'], ['no_deals', 'No deals'], ['confirmation', 'Confirmation email']].map(([v, l]) => (
+          <option value={v} selected={f.kind === v}>{l}</option>
+        ))}
+      </select>
+    </label>
+    <label>
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Sent</span>
+      <select class={field} name="since">
+        {[['', 'Any time'], ['24h', 'Last 24 hours'], ['3d', 'Last 3 days'], ['7d', 'Last 7 days'], ['30d', 'Last 30 days']].map(([v, l]) => (
+          <option value={v} selected={f.since === v}>{l}</option>
+        ))}
+      </select>
+    </label>
+    <label>
+      <span class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Sort by</span>
+      <select class={field} name="sort">
+        <option value="sent" selected={f.sort === 'sent'}>Date sent</option>
+        <option value="received" selected={f.sort === 'received'}>Date brought in</option>
+      </select>
+    </label>
+    <button class="btn-primary !py-2 !px-4">Filter</button>
+    {filtered && <a class="py-2 underline" href="/admin/inbox/">Clear</a>}
+  </form>
+
+  <div class="mb-4 flex items-center justify-between text-sm">
+    <span class="text-muted">{rows.length === 300 ? 'Showing the first 300 matches' : `${rows.length} ${rows.length === 1 ? 'email' : 'emails'}`}</span>
+    <form method="post" action="/api/admin/emails/retry-failed/">
+      <button class="btn-quiet !py-1.5 !px-3 text-sm">Re-run all failed extractions</button>
+    </form>
+  </div>
   <table class="sheet w-full text-sm">
     <thead class="text-left text-muted">
-      <tr><th class="p-2">Received</th><th>Store / address</th><th>Subject</th><th>Status</th><th>Deals</th><th></th></tr>
+      <tr><th class="p-2">Sent</th><th>Store / address</th><th>Subject</th><th>Status</th><th>Deals</th><th></th></tr>
     </thead>
     <tbody>
       {
         rows.map((r) => (
           <tr class="border-t border-rule align-top">
-            <td class="p-2 whitespace-nowrap">{fmt(r.received_at)}</td>
+            <td class="p-2 whitespace-nowrap">{fmt(r.sent_at ?? r.received_at)}<div class="text-xs text-muted">in {fmt(r.received_at)}</div></td>
             <td class="py-2">
               <div class="font-semibold">{r.company ?? '—'}</div>
               <div class="text-muted">{r.alias ?? r.from_address}</div>
