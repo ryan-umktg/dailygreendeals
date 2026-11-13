@@ -66,21 +66,52 @@ const num = { type: ['number', 'null'] };
 const str = { type: ['string', 'null'] };
 
 /**
- * Structured outputs need a strict schema: every object closed with additionalProperties: false,
- * and nullable fields written as anyOf rather than a type array.
+ * Structured outputs compile the schema into a grammar, with hard limits per request:
+ * at most 24 optional properties and 16 properties using unions (anyOf / nullable).
+ * So: every property is required, every object is closed, nullable text becomes a plain string
+ * ("" = not stated, which the cleaning code already treats as null), and only nullable numbers
+ * stay as unions (9 of them).
  */
 function strict(node: any): any {
   if (Array.isArray(node)) return node.map(strict);
   if (!node || typeof node !== 'object') return node;
   const out: any = {};
-  for (const [k, v] of Object.entries(node)) out[k] = k === 'properties' ? Object.fromEntries(Object.entries(v as object).map(([pk, pv]) => [pk, strict(pv)])) : strict(v);
+  for (const [k, v] of Object.entries(node)) {
+    out[k] = k === 'properties' ? Object.fromEntries(Object.entries(v as object).map(([pk, pv]) => [pk, strict(pv)])) : strict(v);
+  }
   if (Array.isArray(out.type)) {
     const { type, description, ...rest } = out;
+    const nonNull = type.filter((t: string) => t !== 'null');
+    if (nonNull.length === 1 && nonNull[0] === 'string') {
+      return { ...rest, type: 'string', description: `${description ? `${description} ` : ''}Empty string if not stated.` };
+    }
     return { ...(description ? { description } : {}), anyOf: type.map((t: string) => (t === 'null' ? { type: 'null' } : { type: t, ...rest })) };
   }
-  if (out.type === 'object') out.additionalProperties = false;
+  if (out.type === 'object') {
+    out.additionalProperties = false;
+    out.required = Object.keys(out.properties ?? {});
+  }
   return out;
 }
+
+export const schemaStats = (schema: any) => {
+  let unions = 0;
+  let optional = 0;
+  const walk = (n: any) => {
+    if (!n || typeof n !== 'object') return;
+    if (Array.isArray(n)) return n.forEach(walk);
+    if (n.type === 'object' && n.properties) {
+      const req = new Set(n.required ?? []);
+      for (const [k, v] of Object.entries<any>(n.properties)) {
+        if (!req.has(k)) optional++;
+        if (v.anyOf || Array.isArray(v.type)) unions++;
+      }
+    }
+    Object.values(n).forEach(walk);
+  };
+  walk(schema);
+  return { unions, optional };
+};
 
 const TOOL = {
   name: 'record_deals',
@@ -121,10 +152,10 @@ const TOOL = {
             value_text: { ...str, description: 'The offer in words when it is not a simple % or $ (BOGO, tiers, free gift).' },
             collection_name: { ...str, description: 'For collection scope, the name used in the email.' },
             category_slugs: { type: 'array', items: { type: 'string' }, description: 'Category slugs from the list given, for collection or product scope.' },
-            code: { ...str, description: 'Discount code exactly as written, or null if applied automatically.' },
+            code: { ...str, description: 'Discount code exactly as written; empty if the discount applies automatically.' },
             url: { ...str, description: 'The link the email uses for this offer (the store or product page), not an unsubscribe or tracking-pixel link.' },
             starts_at: { ...str, description: 'ISO date or date-time if stated.' },
-            ends_at: { ...str, description: 'ISO date or date-time when it ends. Resolve relative dates ("ends Sunday") against the sent date. Null if not stated.' },
+            ends_at: { ...str, description: 'ISO date or date-time when it ends. Resolve relative dates ("ends Sunday") against the sent date.' },
             is_ongoing: { type: 'boolean', description: 'True for standing offers with no end (e.g. "always 20% off subscriptions").' },
             min_order: { ...num, description: 'Minimum order in dollars, if any.' },
             new_customers_only: { type: 'boolean' },
@@ -260,7 +291,7 @@ Return every distinct offer in the email as JSON matching the schema. Rules:
 - Compare against the known deals. Same code or same offer = "same" (or "update" if dates, value or terms changed), with its existing_deal_id.
 - Known deals marked [rejected] were reviewed and declined. If the email repeats one, return it as "same" with its id.
 - Text inside images counts: read the images for the offer, code and end date.
-- Never guess values. Leave fields null when the email doesn't say.
+- Never guess values. When the email doesn't say, use null for numbers and an empty string for text.
 - Lower confidence when the offer is only implied, the code is unclear, or the dates are ambiguous.
 
 Links in the email:
@@ -270,7 +301,7 @@ Email text:
 ${i.text}`;
 }
 
-const OUTPUT_SCHEMA = strict(TOOL.input_schema);
+export const OUTPUT_SCHEMA = strict(TOOL.input_schema);
 
 async function callModel(env: Env, input: CallInput, withImages: boolean) {
   const content: unknown[] = [];
