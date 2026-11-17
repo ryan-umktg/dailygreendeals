@@ -1,39 +1,58 @@
 ---
-title: "How to Read a Certificate of Analysis (COA) When Buying CBD"
-description: "It's always a good idea to be as informed as possible when buying consumer goods, especially those that are consumed and ingested. And that includes…"
+title: "How to Read a CBD Certificate of Analysis (COA)"
+description: "What a CBD lab report should show, how to check it matches the product in your cart, and the red flags that mean you should shop somewhere else."
 published: 2020-03-12
+updated: 2026-11-17
 legacy_paths: ["/blog/how-to-read-a-certificate-of-analysis-coa-when-buying-cbd/"]
 reviewed: false
 ---
 
-It's always a good idea to be as informed as possible when buying consumer goods, especially those that are consumed and ingested. And that includes cannabidiol (CBD) products. When you are searching for a CBD product to buy, you'd be well-advised to review the Certificate of Analysis (COA) that should come with a product created by a reputable manufacturer.
+A certificate of analysis (COA) is a lab report for one batch of a product. For CBD it is the only independent check that what's in the bottle matches the label, because hemp products are not reviewed by the FDA before they are sold. A good store links the COA from every product page, usually through a QR code on the package as well.
 
-But just the name of this report can sound like you're reading a highly scientific paper that only doctors and scientists would be able to make sense of. The thing is, read and understanding a COA is important. But how exactly do you read it and understand its contents?
+Before you use a deal on any CBD product, spend a minute on its COA. Here is what to look for.
 
-## What is a COA?
+## 1. Make sure it's the right report
 
-A COA is a report created by a laboratory that details the chemical contents of a product. When it comes to CBD products, a COA will outline the cannabinoid and terpene profile of the CBD and will make mention of any contaminants that may have been identified in the product. COA’s are important for consumers because they help verify exactly what is in the product.
+- **Batch or lot number.** The number on the COA should match the one printed on your package. A COA for a different batch tells you nothing about yours.
+- **Product name and type.** It should name the exact product (for example, "Full Spectrum Tincture 1500 mg, Mint"), not just "CBD oil."
+- **Date.** Look for a test date within roughly the last year. Very old reports suggest the brand stopped testing.
 
-Manufacturers label their products to help consumers understand what is contained within them. But a COA will allow consumers to make sure that what is actually in the product matches what is being advertised on the label. These reports can typically be found on manufacturers' websites. Otherwise, they can be obtained upon request.
+## 2. Check who did the testing
 
-So, how do you read COA's so that you fully understand what is contained within the CBD product you are buying?
+The lab's name and address should be in the header. It should be an independent third party, not the brand itself. Accreditation to **ISO/IEC 17025** is the standard to look for, and many reports print the accreditation number. You can search the lab's name to confirm it exists.
 
-## How to Read COAs
+## 3. Read the cannabinoid results
 
-For starters, make sure the COA is up-to-date and matches the ID number or code of the product. You may also be able to scan the code on the product's package that will link it to the COA associated with the product.
+The potency panel lists each cannabinoid tested, usually in **mg/g**, **mg/mL** or **%**.
 
-Once you get access to the report, verify the lab that conducted the testing and make sure it is not the same company selling the product. Ideally, testing of CBD products should be done by independent third-party labs that will provide unbiased details of the product. This information should be identified on the header of the report.
+- **CBD amount.** Convert to the whole package and compare it with the label. For example, 50 mg/mL in a 30 mL bottle is 1,500 mg. A result within about 10% of the label is normal.
+- **ND** means "not detected": the amount was below what the lab could measure (its limit of quantitation, or LOQ). It doesn't always mean zero.
+- **THC.** Look for both **Δ9-THC** and **THCA**. Labs usually report a **Total THC** line calculated as Δ9-THC + (THCA × 0.877).
+- **Full spectrum, broad spectrum or isolate.** A full-spectrum product will show small amounts of THC and other cannabinoids. "Broad spectrum" and "isolate" products should show THC as ND.
 
-From there, you'll want to take a look at the cannabinoid and terpene profiles. This section of the COA will tell you exactly what the product contains. There should be a list of all cannabinoids that were detected when the product was tested, as well as each cannabinoid's concentration level, the latter of which will usually be listed as milligrams per gram of the product. You could then multiply that number by the total grams of the bottle to get an idea of how much of each cannabinoid is in the entire bottle.
+### THC limits are changing
 
-An 'ND' stands for 'non-detectable', which doesn't necessarily mean that that particular cannabinoid is not present, but that its levels are so low that the equipment used to test the product could not detect levels that low.
+For years, federal law defined hemp as having no more than 0.3% Δ9-THC by dry weight. That definition is being replaced. From **December 11, 2026** (unless Congress delays it again), hemp is measured by **total THC**, which includes THCA. Finished products are also capped at **0.4 mg of total THC per container**. Many full-spectrum products contained more than that, so expect labels and COAs to change. Some state rules are stricter. To check a product against the per-container cap, multiply its THC result by the package size.
 
-Not only do you want to see how much CBD is in the product - along with other cannabinoids - but you also want to verify whether or not THC is in the product. From a legal standpoint, there must be less than 0.3% THC in weight in the product in order for it to be legal. Any level over that can put the product in a legal grey area on a federal level.
+## 4. Check the safety panels
 
-Levels over this amount also means that there is the potential for the product to induce psychoactive effects when consumed. If you're looking for a CBD product that does not have any mind-altering effects, you'll want to make sure the COA reports less than 0.3% THC.
+A complete COA also tests for contaminants, each marked Pass or Fail:
 
-Be sure to compare the cannabinoid concentrations on the COA to those advertised on the product's label.
+- **Heavy metals** (lead, arsenic, cadmium, mercury)
+- **Pesticides**
+- **Residual solvents** (left over from extraction)
+- **Microbials** (bacteria, yeast and mold) and **mycotoxins**
 
-## Final Thoughts
+Many brands only publish the potency page. That doesn't mean the product is unsafe, but a full panel is a better sign.
 
-A COA is a crucial document that should accompany every CBD product on the market. It's this analysis that will tell you exactly what is in the product and what you are consuming. Purchasing directly from a retailer that prominently displays their COA’s will help you make a more informed purchasing decision.
+## Red flags
+
+- No COA, or one only available "on request"
+- The batch number or product doesn't match
+- No lab name, or a lab that can't be found
+- CBD far below the label, or THC in a product sold as THC-free
+- A PDF that looks edited or a report with no date
+
+## The short version
+
+Match the batch, confirm an independent accredited lab, check that CBD matches the label and THC is where it should be, and look for passing contaminant tests. Then compare prices on our [current deals](/deals/).

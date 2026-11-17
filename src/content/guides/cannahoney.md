@@ -1,123 +1,58 @@
 ---
-title: "Cannahoney & Its Amazing Benefits"
-description: "Cannabis infused honey is the perfect choice for anyone liking some THC in their honey. Cannahoney tastes delicious and has plenty of benefits to offer to…"
+title: "How to Make Cannahoney (Cannabis-Infused Honey)"
+description: "An easy, more reliable way to make cannabis-infused honey with a tincture or infused oil, plus dosing math, storage tips and safety notes."
 published: 2019-03-01
+updated: 2026-11-17
 legacy_paths: ["/blog/cannahoney/"]
 reviewed: false
 ---
 
-Cannabis infused honey is the perfect choice for anyone liking some THC in their honey. Cannahoney tastes delicious and has plenty of benefits to offer to those who eat it.
+Cannahoney is honey infused with cannabis. It's used in tea, on toast or straight off the spoon. It works with CBD, which is legal in most places, or THC where adult-use or medical cannabis is legal for you.
 
-## **How it all began**
+## Why most cannahoney recipes don't work well
 
-Regular honey has been used since 384 BC due to its antibacterial and anti-fungal properties. This is a healthy treat in its own right, but can be made even better when another ingredient regarded by many as a natural remedy (cannabis) is added.
+Many recipes simmer ground cannabis in honey for hours. The problem is that **cannabinoids dissolve in fat and alcohol, not in sugar**, and honey is mostly sugar and water. Much of the CBD or THC stays in the plant material you strain out, so the potency is low and hard to predict.
 
-Obviously, cannahoney is a modern invention that the ancient world didn’t know. We cannot be sure who was the very first person to come up with it, but we can point to the French beekeeper known as Nicholas Trainerbees as one of the first people to mix cannabis and honey together.
+The more reliable method is to start with something that has already extracted the cannabinoids, a **tincture** or **infused oil**, and blend that into the honey. You also know the exact dose.
 
-It took him many years of attempts, successes and failures before he was finally able to train his bees to make honey not from flowers, but from the cannabis plants’ resin. Thus, he obtained the first completely natural cannabis edible, where cannahoney is created without the aid of any artificial processes.
+## What you need
 
-Nicholas’s example was soon followed by other beekeepers, so that now there is a wealth of natural cannabis infused honey to choose from.
+- **1 cup honey**
+- **A measured amount of cannabis tincture or infused coconut oil** (see dosing below)
+- **½–1 teaspoon sunflower lecithin** (helps the oil stay blended)
+- A small saucepan or a double boiler, a whisk, and a clean glass jar
 
-## **How does cannahoney work?**
+## Dosing math
 
-Cannahoney reportedly has a wide range of positive effects, including pain relief and anti inflammatory properties. These come from both natural remedies that make up cannahoney, namely the individual honey and the individual cannabis.
+> **mg per teaspoon = total mg added ÷ 48** (1 cup is about 48 teaspoons)
 
-Thus, you can either eat it as such (a few teaspoons during the day) or add the honey to other ingredients to make new dishes. For example, you can spread cannahoney on toast or cook some honey walnut shrimp with it.
+Example: 240 mg of CBD from a tincture, blended into 1 cup of honey, gives about **5 mg per teaspoon**.
 
-The benefits you can typically expect to get from cannahoney range from improved overall well-being to relief of pain, cough, allergy symptoms, etc.
+For THC, about 2.5–5 mg per serving is commonly suggested for new users.
 
-## **Can you get high on cannahoney?**
+## Steps
 
-Unlike humans, bees lack an endocannabinoid system, which makes them unable to access the THC in the cannabis. Therefore, bees cannot get high, and no psychoactive elements will pass on through their honey. However, these elements are preserved and can be transferred on through a process known as decarboxylation.
+1. **Warm the honey gently** in a double boiler or over the lowest heat until it's runny. Don't let it boil. High heat damages honey and can degrade cannabinoids.
+2. **Whisk in the lecithin** until dissolved.
+3. **Add the tincture or infused oil** and whisk for 2–3 minutes until evenly blended. With an alcohol tincture, warming for a few extra minutes lets some of the alcohol evaporate.
+4. **Pour into a clean jar** and let it cool.
+5. **Stir before each use.** Oil can separate over time.
 
-Thanks to decarboxylation, you can get high on cannahoney, as the process consists of man-made techniques that give you those desired psychoactive results in the honey. Basically, the non-psychoactive THC-A is converted into actual THC, via a number of methods: drying, the slow aging, and the faster heating of cannabis.
+## Storage
 
-## **Benefits**
+Store in an airtight, **clearly labeled** jar (dose per teaspoon and date) in a cool, dark cupboard. Honey keeps well, but infused oil can go rancid after a few months.
 
-We listed some of the benefits of using cannahoney before, but here is a more comprehensive list of ailments that cannahoney helps to combat against:
+## Safety
 
--   Acid reflux
+- **Never give honey to babies under 12 months old.** This applies to all honey, infused or not, because of the risk of infant botulism.
+- **Keep it away from children and pets.** It looks like ordinary honey, so label it clearly and store it separately.
+- **Swallowed cannabis is slow to take effect.** Wait at least 2 hours before taking more.
+- Don't drive after consuming THC, and talk to a doctor first if you take medication or are pregnant or breastfeeding.
 
--   Acne
+## Related
 
--   Burns and cuts
+- [How to make cannabis gummy bears](/guides/thc-gummy-bears-recipe/)
+- [CBD tinctures explained](/guides/cbd-tinctures/)
+- [Current tincture deals](/deals/?category=tinctures)
 
--   Coughing
-
--   Hangovers
-
--   Lack of energy
-
--   Psychoactive properties – cannahoney can get you high
-
--   Relief of cancer symptoms
-
--   Sinus ailments
-
--   Trouble sleeping
-
-**Weight loss -** cannahoney can help with weight loss, when used instead of sugar. This way, you will diminish your carbs intake but still be able to enjoy something sweet every day.
-
-## **Make your own cannahoney**
-
-Cannabis infused honey can be achieved in a number of ways, but one method is easier and can be made by pretty much everyone, right at home.
-
-Before you start, bear in mind that your cannahoney will have to undergo two stages before it actually becomes edible. More specifically, you will first need to turn THC-A from your medical cannabis into THC (a process known as decarboxylation) and then slow cook the cannabis.
-
-### **Materials**
-
-Make sure to have the following ready before starting the process:
-
-**Baking pan -** For baking, as the name suggests.
-
-**Cannabis -** You will need about 15 grams of decarboxylated cannabis to make cannahoney. Smaller quantities are also good, but your cannahoney will be less potent in that case.
-
-**Cheesecloth –** Use it to hold the decarboxylated cannabis and allow the honey to become saturated with the THC. You will also need it at the end of the process to strain the honey.
-
-**Crockpot –** You will need a crockpot big enough to hold the jar, and safe enough to leave on for several hours.
-
-**Glass jar –** Use an airtight glass jar that is not broken or cracked. Rinse the jar before use.
-
-**Honey –** Two cups of honey will do, but you can use more to make the final product more potent.
-
-**Parchment paper –** This will keep the cannabis from sticking to the pan.
-
-**String –** Get a clean piece of string made from natural fibers and strong enough to withstand the slow cooking process. It is important that the string has all these elements (clean, natural, strong) because you will add it in your cannahoney.
-
-### **How to make cannahoney**
-
-First, you need to decarboxylate your cannabis:
-
--   Preheat the oven to 225 degrees Fahrenheit.
-
--   Grind your cannabis until you get a fine powder. Put the parchment paper over the baking pan, then spread the cannabis powder evenly.
-
--   Place the pan on the middle rack of the oven for 40 to 60 minutes. Remove the pan and mix the cannabis powder.
-
-Now it’s time for cooking your cannahoney:
-
--   Put the cannabis inside the cheesecloth and use the piece of string to tie it. Place the cannabis cheesecloth into the glass jar and add the honey; close the jar tightly.
-
--   Place a cloth in the crockpot and put the jar inside, on top of the cloth. Fill the pot to cover ¾ of the jar, then set it to the lowest heat possible (typically, 200-210 degrees Fahrenheit).
-
--   The honey will need 8 hours to cook, during which time stir the contents of the jar a couple of times (every few hours) to relieve pressure.
-
--   Take the jar out of the pot, remove the cheesecloth and strain the cannabis, but be very careful as the jar will be very hot at this point.
-
-### **Storing your cannahoney**
-
-Use an airtight glass jar to store the cannahoney and keep it in a cool room. Make sure no direct sunlight falls on the jar so that you can enjoy your cannahoney for years to come.
-
-## **Conclusion**
-
-Cannahoney can be eaten in a number of ways and can be healthier than THC and CBD gummy bears and brownies.
-
-![amazing cannahoney recipe and benefits](/images/guides/amazing-cannahoney-recipe-and-benefits.png)
-
-![cannahoney benefits](/images/guides/cannahoney-benefits.png)
-![cannahoney benefits and recipe](/images/guides/cannahoney-benefits-and-recipe.png)![cannahoney recipe](/images/guides/cannahoney-recipe.png)
-![amazing cannahoney recipe](/images/guides/amazing-cannahoney-recipe.png)
-![Cannahoney and its amazing benefits](/images/guides/Cannahoney-and-its-amazing-benefits.png)
-![Canna Honey](/images/guides/benefits-of-cannabis-honey.png)
-
-![Cannahoney benefits](/images/guides/cannahoney-benefits-1.png)
+*Only make and use THC products where it's legal for you to do so.*

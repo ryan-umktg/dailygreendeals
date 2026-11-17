@@ -7,3 +7,7 @@ dist/
 .env.*
 !.env.example
 .DS_Store
+
+# Old WordPress backup (keep out of git)
+site-archive-*.zip
+.wp-archive/

@@ -15,13 +15,15 @@ Decisions (Ryan, 2026-11-17):
 - `keep-guide`: converted to Markdown in `src/content/guides/` by `scripts/wp-to-guides.mjs`.
 - `redirect`: 301 only.
 
-## Steps
+## Status
 
-1. Export WordPress (Tools → Export → All content) and run `node scripts/wp-to-guides.mjs <export.xml>`.
-2. Fold `migration/merge-sources/*` into their guides, then delete them.
-3. Copy the files in `migration/images-needed.txt` from `wp-content/uploads` into `public/images/guides/`.
-4. Review each guide, check `migration/outbound-links.txt` for dead or affiliate links, then set `reviewed: true` (unreviewed guides are noindexed).
-5. After any CSV edit, run `node scripts/build-redirects.mjs` to regenerate `public/_redirects`.
+- 2026-11-17: Converted the 17 kept posts from the WordPress backup (`wpp2_` tables in `mysql.sql`) into 15 guides (two pairs merged). Then rewrote each guide: accurate, no disease or treatment claims, current federal hemp rules (synthetics excluded Nov 12, 2026; total-THC standard and 0.4 mg/container cap from Dec 11, 2026 unless delayed), and no guest-post or affiliate links. The old images (keyword-stuffed 2019 graphics) were dropped, so no image copying is needed. The raw conversion is in the commit before the rewrite, for comparison.
+- Next: Ryan reviews each guide and sets `reviewed: true` (unreviewed guides are noindexed).
+
+## Re-running
+
+- `node scripts/wp-to-guides.mjs <export.xml>` converts a WordPress export again (it skips guides that already exist).
+- After any CSV edit, run `node scripts/build-redirects.mjs` to regenerate `public/_redirects`.
 
 ## Store pages the redirects expect
 

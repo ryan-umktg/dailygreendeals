@@ -45,7 +45,7 @@ for (const it of items) {
     html: String(it['content:encoded'] ?? ''),
     date: String(it['wp:post_date'] ?? '').slice(0, 10),
     modified: String(it['wp:post_modified'] ?? '').slice(0, 10),
-    metaDesc: String(meta._yoast_wpseo_metadesc ?? meta.rank_math_description ?? '').trim(),
+    metaDesc: String(meta._seopress_titles_desc ?? meta._yoast_wpseo_metadesc ?? meta.rank_math_description ?? '').trim(),
   });
 }
 

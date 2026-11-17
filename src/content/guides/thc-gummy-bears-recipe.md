@@ -1,58 +1,57 @@
 ---
-title: "THC Gummy Bears Recipe"
-description: "Chances are high that you saw THC gummy bears or tasted them at any point and now you want to make your own batch. This is an incredibly easy process and…"
+title: "How to Make Cannabis Gummy Bears (THC or CBD)"
+description: "A simple homemade cannabis gummy recipe using a tincture, with the dosing math to work out mg per gummy and the safety steps to get right."
 published: 2019-04-12
+updated: 2026-11-17
 legacy_paths: ["/blog/thc-gummy-bears-recipe/"]
 reviewed: false
 ---
 
-![THC Gummy Bears Recipe](/images/guides/THC-Gummy-Bears-Recipe.png)
+Homemade gummies are one of the easiest cannabis edibles to make. This recipe uses a **tincture**, so you skip the decarboxylating and infusing and can calculate the dose of every gummy. It works with a CBD tincture anywhere CBD is legal, or with a THC tincture where adult-use or medical cannabis is legal for you.
 
-Chances are high that you saw THC gummy bears or tasted them at any point and now you want to make your own batch. This is an incredibly easy process and we will guide you through it. All you need are a few ingredients, a mold and your time. After you are done with the first batch, you will become a professional.
+## What you need
 
-## How many marijuana gummy bears you should eat?
+- **½ cup fruit juice** (100% juice, not from concentrate)
+- **3 tablespoons unflavored gelatin**, or 2 teaspoons agar powder for vegan gummies
+- **1–2 tablespoons honey or maple syrup**, to taste
+- **1 tablespoon lemon juice** (optional; helps them set and adds tang)
+- **Cannabis tincture**, a measured amount (see the dosing math below)
+- **½ teaspoon sunflower lecithin** (optional; helps oil-based tinctures blend evenly)
+- **A silicone gummy mold and dropper.** A standard bear mold holds about 50 bears.
 
-The term used here is micro-dosing and it refers to how many gummies you need to eat. Some say that you should eat one only, others claim that you can eat the whole bunch and you will be fine. The truth is completely different. The ideal dosage depends on each person and the only way to find it is to watch the signs.
+## Do the dosing math first
 
-You will need start slow with eating just 1/3 of a gummy bear. Wait for 15 minutes and if nothing happens to eat another 1/3. When you notice the effect you should stop eating. Memorize the ideal amount of candy you ate and use it as your specific dosage. What this means is that you won’t get side effects but you will get all the benefits.
+Decide how much you want per gummy *before* you start:
 
-## Cannabis gummies recipe
+> **mg per gummy = total mg of cannabinoid added ÷ number of gummies**
 
-Let’s see how you can make your own cannabis gummies and how you can explore with this activity. All you need to do is to follow the steps mentioned below and you are looking at the first batch.
+Example: your tincture has 30 mg per mL and you add 5 mL, which is 150 mg. Divided across 50 bears, that's **3 mg per gummy**.
 
-2.  Place a saucepan on medium heat and add 2/3 or strawberry, blackberries or raspberries. You can use the juice as well, but you will need to increase the gelatin amount.
+For THC, **2.5–5 mg** is generally considered a starting dose for people new to edibles. Fill every cavity evenly so the dose stays consistent.
 
-4.  Add 1/3 of water
+## Steps
 
-6.  Add lemon juice, one tablespoon
+1. **Warm the juice.** Heat the juice, sweetener and lemon juice in a small saucepan over **low** heat until warm, not boiling.
+2. **Add gelatin.** Sprinkle the gelatin over the liquid, let it bloom for a minute, then whisk until fully dissolved, about 3–5 minutes. With agar, bring the mix to a brief simmer to activate it.
+3. **Take it off the heat.** Let it cool for a minute. High heat can degrade cannabinoids.
+4. **Stir in the tincture** (and lecithin, if using). Whisk thoroughly for at least a minute so it's evenly spread.
+5. **Fill the mold.** Use the dropper to fill each cavity to the same level. Work quickly before it sets, and stir between fills.
+6. **Chill.** Refrigerate for at least 1 hour until firm, then pop them out.
 
-8.  Add 2 tablespoons of sweetener. The best alternative is honey, but you can use maple syrup as well.
+## Storage and labeling
 
-10.  Add 2 or 3 tablespoons of cannabis tincture
+- Store in an **airtight, clearly labeled container** in the fridge. Write the mg per gummy and the date on the label. They keep about 1–2 weeks.
+- **Keep them away from children and pets.** Homemade gummies look exactly like candy. Use a locked or out-of-reach container.
 
-12.  Add 3 tablespoons of grass fed gelatin
+## How to eat them safely
 
-14.  Mix all the ingredients perfectly
+- **Edibles are slow.** They can take **30 minutes to 2 hours** to take effect and last several hours.
+- **Start with one gummy and wait at least 2 hours** before taking more. Taking more too soon is the most common edible mistake.
+- **Don't drive** or operate machinery after eating THC edibles, and don't mix them with alcohol.
+- Talk to a doctor first if you take medication or are pregnant or breastfeeding.
 
-16.  Pour them in a mold
+## Prefer to buy ready-made?
 
-18.  Leave them stay for 5 minutes
+Store-bought gummies have lab-tested, consistent doses. See our [edibles buying guide](/guides/cbd-edibles/) and [current gummy deals](/deals/?category=gummies).
 
-We mentioned that you should leave the cannabis gummy bears cool down for 5 minutes. This is in a case you are placing them in a freezer. If you use a refrigerator, leave them stay for 15 minutes. The goal is to have a perfectly shaped and cool candy that looks fabulous.
-
-The mold is something that depends on you. You can find all kinds available in your local store and there is no rule which one you must use. Just make sure that each mold is filled properly in order to get the look you want. For this recipe we used bears but you can use other molds which are easier to divide and find your suitable dosage.
-
-## The final word
-
-You were able to find the ultimate and the simplest weed gummies recipe out there. We also helped you in determining the right dosage for you and we hope now you are ready. As a matter of fact, we know you are ready to start making and eating this type of candy, which tastes great and comes with all kinds of benefits.
-
-![cannabis gummy bears](/images/guides/cannabis-gummy-bears.png)
-
-![pot gummy bears](/images/guides/pot-gummy-bears.png)
-
-![pot gummy bears recipe](/images/guides/pot-gummy-bears-recipe.png)
-
-![thc gummy bears](/images/guides/thc-gummy-bears.png)
-![cannabis gummies](/images/guides/cannabis-gummies.png)
-
-![marijuana gummy bear](/images/guides/marijuana-gummy-bears.png)
+*Only make and use THC products where it's legal for you to do so.*

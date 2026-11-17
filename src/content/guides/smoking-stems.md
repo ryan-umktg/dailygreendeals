@@ -1,49 +1,51 @@
 ---
-title: "Can You Smoke Weed Stems?"
-description: "What to do with weed stems? Can you smoke them? What else can I do with them?"
+title: "Can You Smoke Weed Stems? (And What to Do With Them Instead)"
+description: "Why smoking cannabis stems isn't worth it, and better uses for leftover stems, from tea to infused butter, with realistic expectations about potency."
 published: 2019-07-29
+updated: 2026-11-17
 legacy_paths: ["/blog/smoking-stems/"]
 reviewed: false
 ---
 
-More and more cannabis fans end up asking themselves – can you smoke weed stems? Some of them are simply way too lazy to pick out stems, while others have the stems as remains. The truth is weed stems can, indeed, be reused, but not by smoking them.
+**You can, but you shouldn't.** Stems contain very little of the cannabinoids and terpenes found in buds. Most of a plant's THC, CBD and aroma is made in the sticky resin glands (trichomes) on the flowers. Stems are mostly woody fiber.
 
-## **Can you smoke stems?
-**
+## Why smoking stems isn't worth it
 
-Of course. In fact, you can smoke anything, but it does not mean that it is good for you. Smoking stems will not necessarily get you high, but may give you a long lasting headache. After all, you are inhaling some plant material. It is just like smoking buds, with the difference that buds actually have beneficial cannabinoids. Stems, on the other hand, are almost dry.
+- **Almost no effect.** There's so little cannabinoid content that you'll get mostly smoke.
+- **Harsh smoke.** Woody plant material burns hot and harsh, and tends to cause coughing and headaches.
+- **More smoke, no payoff.** Every bit of plant material you burn adds combustion byproducts to your lungs.
 
-It does not mean that you should throw stems away. In fact, they have some good uses. So, what to do with weed stems?
+## Better uses for leftover stems
 
-## **Weed Stem Tea**
+Keep your expectations modest. Stems are weak, so these uses get a small amount of value out of material you'd otherwise throw away. Collect stems in a jar until you have a decent handful.
 
-Adding some stems to your tea is a good idea to relax. Sure, marijuana stems tea will not get you high, but it will come up with a brief sensation of euphoria, not to mention the relaxing effects. Mix stems into your favorite tea – it works wonders with chai, peppermint or chamomile.
+### Stem tea
 
-So, how to make stem tea? Stems must be decarboxylated first – grind your stems into small pieces. Do not exaggerate. If you turn them into powder, they will turn bitter. Put the remains in a pot, add some water, a dash of coconut oil and bring to boil. After 15 minutes of simmering, you can strain the water, add your favorite tea and enjoy.
+Cannabinoids don't dissolve well in water. Your tea needs some **fat**, and the stems need **heat** to activate (decarboxylate) the cannabinoids.
 
-## **Stem oil**
+1. Break or grind the stems into small pieces. Not powder, which gets bitter.
+2. Bake them on a tray at about 240°F (115°C) for 30–40 minutes to decarboxylate.
+3. Simmer in water with a spoonful of butter or coconut oil, or use milk, for 20–30 minutes.
+4. Strain, add a tea bag or honey, and drink.
 
-The marijuana stems tea is probably your best option to reuse stems, but not the only one. Stem hash oil is just as handy. You can do it with other parts too, such as buds. Stems will reduce its strength, but it is still better than binning them.
+### Stem butter or oil
 
-Get a bottle of isopropyl alcohol and grind your stems until they become a fine powder. Put them in a jar, add the alcohol, cover it up and shake for a few minutes. Pour the new mix into a bowl to keep plant remains away.
+Add decarboxylated stems to the next batch of cannabutter or infused oil you make from trim or flower. The stems add a little potency, and it saves a separate batch. Simmer gently with butter or oil and water for a few hours, then strain.
 
-The dish can then be kept in an open area – just make sure you have enough ventilation. The alcohol will disappear, leaving you with a sticky coating. Scrape it up, roll it into a ball and enjoy.
+### Compost
 
-## **Stem butter**
+Stems are good plant material for compost.
 
-Weed stem butter is also better than smoking stems. If you have made your own cannabis butter before, this is similar, only you need to use stems. Butter is less potent, but still worth it. Melt regular butter in a pan, add finely ground cannabis, stir for about 45 minutes and keep it in the fridge.
+## A note on potency and safety
 
-Bottom line, whether you want to make a marijuana stem tea, butter or oil, stems can be easily reused. Can stems get you high? You might get a bit euphoric and relaxed with tea, but this is pretty much it.​
+Because potency from stems is low and unpredictable, start with a small amount of anything you make. Edibles and drinks can take up to 2 hours to take effect, so wait before having more. Label homemade cannabis products and keep them away from children and pets.
 
-![Weed Stems Uses - What To Do With Weed Stems](/images/guides/Weed-Stems-Uses-What-To-Do-With-Weed-Stems.png)
+Skip solvent-based extraction (isopropyl alcohol, butane and similar) at home. It carries a real risk of fire and leaves residue behind.
 
-![](/images/guides/weed-stems-can-you-smoke-them-200x300.png)
+## Related
 
-![weed stems uses](/images/guides/weed-stems-uses-200x300.png)
+- [How to make cannahoney](/guides/cannahoney/)
+- [How to make cannabis gummy bears](/guides/thc-gummy-bears-recipe/)
+- [Smokable hemp flower and pre-rolls](/guides/smokable-cbd-flower/)
 
-![can you smoke weed stems](/images/guides/can-you-smoke-weed-stems-200x300.png)
-
-![what to do with weed stems](/images/guides/what-to-do-with-weed-stems-200x300.png)
-![smoke weed](/images/guides/smoke-weed.png)
-
-![Weed Stems](/images/guides/weed-stems.png)
+*Only grow, make or use THC products where it's legal for you to do so.*
