@@ -28,7 +28,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "fast-xml-parser": "^5.12.1",
     "imapflow": "^2.11.0",
+    "turndown": "^7.2.5",
     "typescript": "^6.0.3",
     "wrangler": "^4.161.0"
   }

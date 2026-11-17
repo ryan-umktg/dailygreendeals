@@ -1,0 +1,151 @@
+old_path,ref_domains,group,action,new_path,note
+/,3391,home,redirect,/,http+https combined
+/coupons/cbd-vape-juice-cbd-genesis-coupons/,566,coupon-cbd,store-page,/brands/cbd-genesis/,CBD vape juice brand
+/cbd-oil-reviews/nuleaf-naturals-review/,324,review-cbd,store-page,/brands/nuleaf-naturals/,merge review into brand page
+/coupons/badassglass-coupon/,245,coupon-headshop,redirect,/deals/,glass/headshop; off-scope store (Ryan 2026-11-17)
+/coupons/dankstop/,224,coupon-headshop,redirect,/deals/,glass/headshop; off-scope store (Ryan 2026-11-17)
+/blog/zoloft-and-weed/,202,blog-health,redirect,/guides/,drug interaction topic; health/drug-test post dropped (Ryan 2026-11-17)
+/blog/thc-gummy-bears-recipe/,183,blog-thc,keep-guide,/guides/thc-gummy-bears-recipe/,THC recipe
+/coupons/wizard-puff/,178,coupon-accessory,redirect,/deals/,smoking accessory; off-scope store (Ryan 2026-11-17)
+/coupons/intrinsic-hemp-coupons/,171,coupon-cbd,store-page,/brands/intrinsic-hemp/,
+/coupons/nuleaf-naturals/,167,coupon-cbd,store-page,/brands/nuleaf-naturals/,
+/blog/smoking-weed-after-wisdom-teeth-removal/,162,blog-health,redirect,/guides/,post-surgery topic; health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/crop-king-seeds-coupons/,158,coupon-seeds,redirect,/deals/,seed bank; off-scope store (Ryan 2026-11-17)
+/coupons/dank-geek-coupons/,151,coupon-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/cbdistillery-coupons/,147,coupon-cbd,store-page,/brands/cbdistillery/,
+/coupons/msnl/,142,coupon-seeds,redirect,/deals/,seed bank; off-scope store (Ryan 2026-11-17)
+/seeds-coupons/,136,hub,redirect,/deals/,seeds category hub
+/coupons/dutch-seeds-shop-coupons/,118,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/growers-choice-seeds/,102,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/vape-world-coupons/,102,coupon-vaporizer,redirect,/deals/,vaporizer retailer; off-scope store (Ryan 2026-11-17)
+/blog/24-hour-thc-detox/,101,blog-drugtest,redirect,/guides/,drug-test evasion; health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/green-roads-greenroadsworld-com-coupons/,96,coupon-cbd,store-page,/brands/green-roads/,
+/coupons/infinite-cbd-coupons/,95,coupon-cbd,store-page,/brands/infinite-cbd/,
+/cbd-oil-reviews/cbd-distillery-review/,87,review-cbd,store-page,/brands/cbdistillery/,
+/coupons/cbd-pure-coupons/,90,coupon-cbd,store-page,/brands/cbd-pure/,
+/coupons/cbdk9-k9cbdoil-co-coupons/,88,coupon-cbd,store-page,/brands/cbdk9/,pet CBD
+/coupons/dixie-botanicals-coupons/,87,coupon-cbd,store-page,/brands/dixie-botanicals/,
+/coupons/bota-hemp-coupons/,86,coupon-cbd,store-page,/brands/bota-hemp/,
+/coupons/dr-dabber-coupons/,86,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/doyougoodybox-420-goody-box-deals/,82,coupon-box,redirect,/deals/,subscription box; off-scope store (Ryan 2026-11-17)
+/coupons/original-seeds-store-coupons/,83,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/kings-pipe-coupons/,80,coupon-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/cbd-coupons/vitagenne-coupon-code/,79,coupon-cbd,store-page,/brands/vitagenne/,
+/coupons/weedseeds-express-coupons/,79,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/now-cbd-coupons/,77,coupon-cbd,store-page,/brands/now-cbd/,
+/coupons/skyblue-vapor-coupons/,77,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/the-kind-pen-coupons/,78,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/cannastick-coupons/,75,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/toker-supply/,72,coupon-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/green-flower-botanicals-coupons/,72,coupon-cbd,store-page,/brands/green-flower-botanicals/,
+/coupons/cbd-hemp-oil-coupons/,70,coupon-cbd,store-page,/brands/cbd-hemp-oil/,
+/coupons/ismokefresh-coupons/,68,coupon-accessory,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/cbd-american-shaman-coupons/,67,coupon-cbd,store-page,/brands/cbd-american-shaman/,
+/best-cbd-gummies/,65,listicle-cbd,redirect,/deals/?category=gummies,
+/coupons/i-love-growing-marijuana-coupons/,65,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/smoke-cartel/,64,coupon-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/cbd-oil-reviews/american-shaman-review/,64,review-cbd,store-page,/brands/cbd-american-shaman/,
+/coupons/got-vape-coupons/,62,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/cbd-coupons/,61,hub,redirect,/deals/,
+/sitemap/,48,wp-page,redirect,/,
+/blog/cashless-atms-for-cannabis-dispensaries-make-debit-payments-possible/,47,blog-news,redirect,/guides/,dated industry news
+/blog/cbd-for-seniors/,46,blog-cbd-health,redirect,/guides/,health claims; health/drug-test post dropped (Ryan 2026-11-17)
+/blog/nanoenhanced-hemp-oil/,46,blog-cbd,keep-guide,/guides/nanoenhanced-hemp-oil/,
+/coupons/,47,hub,redirect,/deals/,
+/coupons/atmosrx/,44,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/headshop-coupons/,44,hub,redirect,/deals/,
+/blog/cannahoney/,43,blog-cbd,keep-guide,/guides/cannahoney/,
+/blog/what-are-the-benefits-of-cbd-oil/,43,blog-cbd-health,redirect,/guides/,merge with other benefits posts; health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/vapordna/,39,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/shop/cherry-pie-seeds/,38,wc-product,redirect,/deals/,old WooCommerce product
+/blog/yocan-ishred-vaporizer-review/,37,blog-vaporizer,redirect,/guides/,
+/blog/cbd-vape-oil/,36,blog-cbd,keep-guide,/guides/cbd-vape-oil/,
+/blog/smoking-stems/,36,blog-thc,keep-guide,/guides/smoking-stems/,
+/blog/medical-marijuana-strains/,35,blog-thc,redirect,/guides/,
+/coupons/sensi-seeds-coupons/,34,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/top-autoflowering-strains-with-highest-thc-content/,33,blog-grow,redirect,/guides/,
+/blog/medical-marijuana/,32,blog-thc,redirect,/guides/,
+/coupons/vapornation-coupons/,30,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/cbd-essence-coupons/,29,coupon-cbd,store-page,/brands/cbd-essence/,
+/blog/best-detox-shampoos-for-drug-test/,29,blog-drugtest,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/cbd-oil-uses/,28,blog-cbd-health,redirect,/guides/,merge; health/drug-test post dropped (Ryan 2026-11-17)
+/blog/e-cigarette-guide-what-nicotine-strength-do-i-need/,27,blog-nicotine,redirect,/guides/,off-topic
+/coupons/hippie-butler/,27,coupon-cbd,store-page,/brands/hippie-butler/,
+/blog/cbd-oil-for-anxiety/,26,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/sensible-seeds-coupons/,26,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/save-money-vaping/,25,blog-vaporizer,redirect,/guides/,
+/coupons/haze-vaporizers-technologies/,25,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/litrhino-coupons/,25,coupon-accessory,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/coupons/the-vault-seeds/,24,coupon-seeds,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/cbd-gummies-and-medical-benefits/,22,blog-cbd-health,redirect,/guides/,merge; health/drug-test post dropped (Ryan 2026-11-17)
+/headshop-reviews/smoke-cartel-review/,22,review-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/cbd-for-vegan-athletes/,20,blog-cbd,keep-guide,/guides/cbd-for-athletes/,
+/blog/levo-oil-infuser-review-is-it-any-worth/,20,blog-accessory,redirect,/guides/,
+/blog/does-health-insurance-cover-cbd-oil/,19,blog-cbd,keep-guide,/guides/does-health-insurance-cover-cbd/,
+/blog/how-to-grow-cannabis-at-home/,18,blog-grow,redirect,/guides/,
+/blog/terravidaonline-cbd-products/,18,blog-sponsored,redirect,/guides/,old sponsored post
+/top-cbd-brands/,18,listicle-cbd,redirect,/brands/,
+/top-cbd-skincare-products/,18,listicle-cbd,redirect,/deals/?category=topicals,
+/about-us/,17,wp-page,redirect,/about/,
+/blog/,17,hub,redirect,/guides/,
+/blog/5-secret-tips-experts-already-know-about-beauty/,17,blog-offtopic,redirect,/,
+/blog/best-entry-level-jobs-in-the-cannabis-industry/,17,blog-industry,redirect,/guides/,
+/blog/thc-detox-kit/,17,blog-drugtest,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/best-cbd-vape-pens/,16,listicle-cbd,redirect,/deals/?category=vapes,
+/blog/blue-dream-strain/,16,blog-thc,redirect,/guides/,
+/blog/how-to-make-money-in-the-cannabis-industry/,16,blog-industry,redirect,/guides/,
+/coupons/grasscity-coupons/,16,coupon-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/headshop-reviews/ismokefresh-review/,16,review-headshop,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/cbd-for-autism/,15,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/is-a-tincture-the-best-cbd-application/,15,blog-cbd,keep-guide,/guides/cbd-tinctures/,merge with tincture 101
+/blog/6-reasons-to-try-cbd-edibles/,14,blog-cbd,keep-guide,/guides/cbd-edibles/,
+/blog/buying-weed-in-san-francisco-is-it-legal/,14,blog-thc,redirect,/guides/,
+/blog/cbd-oil-for-dogs/,14,blog-cbd,keep-guide,/guides/cbd-for-dogs/,
+/blog/how-to-pass-marijuana-drug-test/,14,blog-drugtest,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/nano-cbd/,14,blog-cbd,keep-guide,/guides/nanoenhanced-hemp-oil/,merge with nano post
+/cbd-flower-strains/,14,listicle-cbd,redirect,/deals/?category=flower,
+/coupons/grenco-science/,14,coupon-vaporizer,redirect,/deals/,off-scope store (Ryan 2026-11-17)
+/blog/best-synthetic-urine/,13,blog-drugtest,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/can-cbd-help-me-sleep-better/,13,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/how-to-read-a-certificate-of-analysis-coa-when-buying-cbd/,12,blog-cbd,keep-guide,/guides/how-to-read-a-cbd-coa/,core buying guide
+/blog/melatonin-and-weed/,12,blog-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/research-on-cbd-health-benefits/,12,blog-cbd-health,redirect,/guides/,merge; health/drug-test post dropped (Ryan 2026-11-17)
+/blog/top-10-retail-dispensaries-in-canada/,12,blog-thc,redirect,/guides/,
+/blog/cbd-consumption-guide/,11,blog-cbd,keep-guide,/guides/cbd-consumption-guide/,
+/blog/what-are-carb-caps-and-why-you-need-one/,11,blog-accessory,redirect,/guides/,
+/vaporizer-coupons/,12,hub,redirect,/deals/?category=vapes,
+/blog/is-weed-legal-in-canada/,10,blog-thc,redirect,/guides/,
+/blog/cbd-oil-benefits/,9,blog-cbd-health,redirect,/guides/,merge; health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/medical-marijuana-inc-coupons/,9,coupon-cbd,store-page,/brands/medical-marijuana-inc/,
+/coupons/pure-hemp-coupons/,10,coupon-cbd,store-page,/brands/pure-hemp/,
+/submit-guest-post/,9,wp-page,redirect,/,
+/best-seed-banks-that-ship-to-usa-and-canada/,8,listicle-seeds,redirect,/deals/,
+/blog/indica-vs-sativa/,8,blog-thc,redirect,/guides/,
+/blog/smokable-cbd/,8,blog-cbd,keep-guide,/guides/smokable-cbd-flower/,
+/privacy-policy/,8,wp-page,redirect,/privacy/,
+/subscription-boxes/,8,hub,redirect,/deals/,
+/blog/cbd-merchant-accounts/,7,blog-industry,redirect,/guides/,
+/blog/is-marijuana-a-depressant/,7,blog-thc,redirect,/guides/,
+/subscription-boxes/getstashbox/,7,coupon-box,redirect,/deals/,
+/terms-of-use/,7,wp-page,redirect,/terms/,
+/blog/how-cbd-affects-the-brain/,6,blog-cbd-health,redirect,/guides/,merge; health/drug-test post dropped (Ryan 2026-11-17)
+/coupons/plantacea-cbd-coupons/,6,coupon-cbd,store-page,/brands/plantacea/,
+/blog/buying-bulk-weed-to-turn-into-profits/,5,blog-thc,redirect,/guides/,
+/blog/cbd-for-fibromyalgia/,5,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/how-to-clean-a-bong/,5,blog-accessory,redirect,/guides/,
+/blog/how-to-dry-weed/,5,blog-grow,redirect,/guides/,
+/blog/what-are-cannabis-terpenes-and-what-do-they-do/,5,blog-cbd,keep-guide,/guides/terpenes/,
+/blog/cbd-for-seizures-and-epilepsy/,4,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/how-to-effectively-vaporize-weed/,4,blog-thc,redirect,/guides/,
+/blog/how-to-grind-weed-without-a-grinder/,4,blog-thc,redirect,/guides/,
+/blog/is-the-pax-3-still-a-great-vape-in-2019/,4,blog-vaporizer,redirect,/guides/,
+/cbd-oil-reviews/,4,hub,redirect,/brands/,
+/blog/cbd-tincture-all-you-need-to-know/,2,blog-cbd,keep-guide,/guides/cbd-tinctures/,
+/blog/does-cbd-show-up-on-a-drug-test/,2,blog-cbd,keep-guide,/guides/does-cbd-show-up-on-a-drug-test/,factual CBD buyer question
+/blog/potnetwork-to-compete-with-bigger-brands/,2,blog-news,redirect,/guides/,
+/coupons/cloverstrip-coupons/,2,coupon-cbd,store-page,/brands/cloverstrip/,
+/headshop-reviews/,2,hub,redirect,/brands/,
+/blog/cbd-during-pregnancy-is-it-safe-for-mothers/,1,blog-cbd-health,redirect,/guides/,health/drug-test post dropped (Ryan 2026-11-17)
+/blog/how-to-land-a-job-in-cannabis-industry/,1,blog-industry,redirect,/guides/,
+/coupons/yourvaporizers-coupons/,1,coupon-vaporizer,redirect,/deals/?category=vapes,
+/home/,1,wp-page,redirect,/,

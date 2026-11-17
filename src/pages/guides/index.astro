@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => (b.data.updated ?? b.data.published).getTime() - (a.data.updated ?? a.data.published).getTime(),
+);
+---
+
+<Base title="CBD Guides - Daily Green Deals" description="Plain-language guides to buying and using CBD and hemp products.">
+  <div class="mx-auto max-w-3xl px-4 py-10">
+    <h1 class="text-3xl font-extrabold">Guides</h1>
+    <ul class="mt-8 space-y-6">
+      {guides.map((g) => (
+        <li>
+          <a href={`/guides/${g.id}/`} class="text-lg font-semibold hover:underline">{g.data.title}</a>
+          <p class="text-sm text-muted">{g.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
