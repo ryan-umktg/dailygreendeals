@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
-import { DEAL_TYPES, SCOPES } from '../../../../lib/extract';
+import { DEAL_TYPES, PROMO_TYPES, SCOPES } from '../../../../lib/extract';
 import { back, fbool, fnum, fromLocalInput, fstr } from '../../../../lib/form';
 
 export const prerender = false;
@@ -19,8 +19,9 @@ export const POST: APIRoute = async ({ params, request }) => {
   if (action === 'save' || action === 'approve') {
     const scope = fstr(f, 'scope', 20);
     const type = fstr(f, 'deal_type', 20);
+    const promo = fstr(f, 'promo_type', 20);
     await e.DB.prepare(
-      `UPDATE deals SET title = ?, scope = ?, deal_type = ?, value_pct = ?, value_amount = ?, value_text = ?, code = ?, url = ?,
+      `UPDATE deals SET title = ?, scope = ?, deal_type = ?, promo_type = ?, value_pct = ?, value_amount = ?, value_text = ?, code = ?, url = ?,
          starts_at = ?, ends_at = ?, is_ongoing = ?, min_order = ?, new_customers_only = ?, subscribe_only = ?, restrictions = ?,
          featured = ?, updated_at = ?,
          status = CASE WHEN ? THEN 'approved' ELSE status END,
@@ -32,6 +33,7 @@ export const POST: APIRoute = async ({ params, request }) => {
         fstr(f, 'title', 160) ?? 'Untitled deal',
         (SCOPES as readonly string[]).includes(scope ?? '') ? scope : 'sitewide',
         (DEAL_TYPES as readonly string[]).includes(type ?? '') ? type : 'other',
+        (PROMO_TYPES as readonly string[]).includes(promo ?? '') ? promo : null,
         fnum(f, 'value_pct'),
         fnum(f, 'value_amount'),
         fstr(f, 'value_text', 200),
@@ -55,13 +57,16 @@ export const POST: APIRoute = async ({ params, request }) => {
       .run();
   } else if (action === 'reject') {
     await e.DB.prepare(`UPDATE deals SET status = 'rejected', updated_at = ? WHERE id = ?`).bind(now(), id).run();
+  } else if (action === 'restore') {
+    // An automatically skipped deal Ryan wants to look at after all.
+    await e.DB.prepare(`UPDATE deals SET status = 'draft', auto_rejected = NULL, updated_at = ? WHERE id = ? AND status = 'rejected'`).bind(now(), id).run();
   } else if (action === 'expire') {
     await e.DB.prepare(`UPDATE deals SET status = 'expired', needs_review = NULL, updated_at = ? WHERE id = ?`).bind(now(), id).run();
   } else if (action === 'keep') {
     await e.DB.prepare(`UPDATE deals SET needs_review = NULL, last_seen_at = ?, updated_at = ? WHERE id = ?`).bind(now(), now(), id).run();
   } else if (action === 'apply_changes' && deal.pending_changes) {
     const c = JSON.parse(deal.pending_changes) as Record<string, unknown>;
-    const cols = ['title', 'scope', 'deal_type', 'value_pct', 'value_amount', 'value_text', 'collection_name', 'category_slugs', 'code', 'url', 'starts_at', 'ends_at', 'is_ongoing', 'min_order', 'new_customers_only', 'subscribe_only', 'restrictions', 'source_email_id'];
+    const cols = ['title', 'scope', 'deal_type', 'promo_type', 'value_pct', 'value_amount', 'value_text', 'collection_name', 'category_slugs', 'code', 'url', 'starts_at', 'ends_at', 'is_ongoing', 'min_order', 'new_customers_only', 'subscribe_only', 'restrictions', 'source_email_id'];
     await e.DB.prepare(
       `UPDATE deals SET ${cols.map((k) => `${k} = ?`).join(', ')}, pending_changes = NULL, needs_review = NULL, updated_at = ? WHERE id = ?`,
     )

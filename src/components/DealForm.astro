@@ -1,6 +1,6 @@
 ---
 /** One editable deal in the admin, with its source email and actions. */
-import { DEAL_TYPES, SCOPES } from '../lib/extract';
+import { DEAL_TYPES, PROMO_TYPES, SCOPES } from '../lib/extract';
 import { toLocalInput } from '../lib/form';
 
 interface Props {
@@ -12,6 +12,7 @@ const { deal: d, products = [], returnTo } = Astro.props;
 const input = 'w-full rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
 const label = 'block text-xs font-semibold uppercase tracking-wide text-muted mb-1';
 const pending = d.pending_changes ? JSON.parse(d.pending_changes) : null;
+const promoLabels: Record<string, string> = { product: 'Product-level', order: 'Order-level', shipping: 'Shipping' };
 ---
 
 <form method="post" action={`/api/admin/deals/${d.id}/`} class="sheet p-5">
@@ -48,7 +49,13 @@ const pending = d.pending_changes ? JSON.parse(d.pending_changes) : null;
   }
 
   <div class="grid gap-3 md:grid-cols-4">
-    <label class="md:col-span-2"><span class={label}>Title</span><input class={input} name="title" value={d.title} required /></label>
+    <label class="md:col-span-3"><span class={label}>Title</span><input class={input} name="title" value={d.title} required /></label>
+    <label><span class={label}>Promo type</span>
+      <select class={input} name="promo_type">
+        <option value="" selected={!d.promo_type}>—</option>
+        {PROMO_TYPES.map((t) => <option value={t} selected={d.promo_type === t}>{promoLabels[t]}</option>)}
+      </select>
+    </label>
     <label><span class={label}>Scope</span>
       <select class={input} name="scope">{SCOPES.map((s) => <option selected={d.scope === s}>{s}</option>)}</select>
     </label>

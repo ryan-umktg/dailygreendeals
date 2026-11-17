@@ -9,6 +9,15 @@ const e = env as Env;
 
 const drafts = await dealsWithProducts(e, `d.status = 'draft'`, 'd.confidence DESC, d.created_at');
 const flagged = await dealsWithProducts(e, `d.status = 'approved' AND d.needs_review IS NOT NULL`, 'd.updated_at DESC');
+const skipped = (
+  await e.DB.prepare(
+    `SELECT d.id, d.title, d.auto_rejected, d.code, d.source_email_id, d.updated_at, c.name AS company, em.subject AS email_subject
+     FROM deals d JOIN companies c ON c.id = d.company_id LEFT JOIN inbound_emails em ON em.id = d.source_email_id
+     WHERE d.status = 'rejected' AND d.auto_rejected IS NOT NULL AND d.updated_at > ? ORDER BY d.updated_at DESC LIMIT 100`,
+  )
+    .bind(new Date(Date.now() - 14 * 86_400_000).toISOString())
+    .all<Record<string, any>>()
+).results;
 const confirmations = (
   await e.DB.prepare(
     `SELECT e.id, e.subject, e.confirmation_url, c.name AS company FROM inbound_emails e LEFT JOIN companies c ON c.id = e.company_id
@@ -63,6 +72,38 @@ const counts = await e.DB.prepare(
     <h2 class="mb-3 text-xl">New deals to approve ({drafts.length})</h2>
     {drafts.length === 0 ? <p class="text-muted">Nothing waiting.</p> : <div class="space-y-6">{drafts.map((x) => <DealForm {...x} returnTo="/admin/" />)}</div>}
   </section>
+
+  {
+    skipped.length > 0 && (
+      <details class="mb-10">
+        <summary class="cursor-pointer text-xl font-bold">Skipped automatically ({skipped.length}, last 14 days)</summary>
+        <p class="mt-2 mb-3 text-sm text-muted">First-order and new-customer-only offers don't go in the queue. Restore one to review it as a draft.</p>
+        <ul class="sheet">
+          {skipped.map((x) => (
+            <li class="sheet-row">
+              <span>
+                <strong>{x.company}</strong> · {x.title}
+                {x.code && <span class="ml-1 font-mono text-muted">{x.code}</span>}
+                <span class="block text-xs text-muted">
+                  {x.auto_rejected}
+                  {x.source_email_id && (
+                    <>
+                      {' · '}
+                      <a class="underline" href={`/admin/emails/${x.source_email_id}/`} target="_blank">{x.email_subject ?? 'source email'}</a>
+                    </>
+                  )}
+                </span>
+              </span>
+              <form method="post" action={`/api/admin/deals/${x.id}/`}>
+                <input type="hidden" name="return_to" value="/admin/" />
+                <button class="btn-quiet !py-1.5 !px-3 text-sm" name="action" value="restore">Restore to drafts</button>
+              </form>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )
+  }
 
   <section>
     <h2 class="mb-3 text-xl">Live deals to check ({flagged.length})</h2>

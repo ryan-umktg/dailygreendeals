@@ -7,6 +7,7 @@ import PostalMime from 'postal-mime';
 
 export const DEAL_TYPES = ['percent_off', 'dollars_off', 'bogo', 'bundle', 'free_gift', 'free_shipping', 'tiered', 'price_drop', 'other'] as const;
 export const SCOPES = ['sitewide', 'collection', 'product'] as const;
+export const PROMO_TYPES = ['product', 'order', 'shipping'] as const;
 
 export type ExtractedProduct = {
   product_name: string;
@@ -25,6 +26,7 @@ export type ExtractedDeal = {
   title: string;
   scope: (typeof SCOPES)[number];
   deal_type: (typeof DEAL_TYPES)[number];
+  promo_type?: (typeof PROMO_TYPES)[number];
   value_pct?: number | null;
   value_amount?: number | null;
   value_text?: string | null;
@@ -147,6 +149,12 @@ const TOOL = {
               description: 'sitewide = whole store. collection = a category or line (all gummies). product = named products only.',
             },
             deal_type: { type: 'string', enum: [...DEAL_TYPES] },
+            promo_type: {
+              type: 'string',
+              enum: [...PROMO_TYPES],
+              description:
+                'Where the discount is applied. product = the item prices themselves are reduced (sale prices, BOGO, bundles, a collection on sale, an automatic sitewide markdown with no code). order = taken off the cart or order total at checkout (a code for % or $ off the order, spend $X save $Y, tiered spend discounts). shipping = free or reduced shipping.',
+            },
             value_pct: { ...num, description: 'Percent off as a number, 30 for 30%. For "up to" offers use the maximum and say so in restrictions.' },
             value_amount: { ...num, description: 'Dollars off.' },
             value_text: { ...str, description: 'The offer in words when it is not a simple % or $ (BOGO, tiers, free gift).' },
@@ -158,7 +166,11 @@ const TOOL = {
             ends_at: { ...str, description: 'ISO date or date-time when it ends. Resolve relative dates ("ends Sunday") against the sent date.' },
             is_ongoing: { type: 'boolean', description: 'True for standing offers with no end (e.g. "always 20% off subscriptions").' },
             min_order: { ...num, description: 'Minimum order in dollars, if any.' },
-            new_customers_only: { type: 'boolean' },
+            new_customers_only: {
+              type: 'boolean',
+              description:
+                'True when only a first order, first purchase or new customer can use it: welcome/signup codes, "first order", "new customers", "first subscription order", "your first box". False for offers any existing customer can use.',
+            },
             subscribe_only: { type: 'boolean', description: 'Only for subscribe-and-save orders.' },
             restrictions: { ...str, description: 'Exclusions and fine print in one or two plain sentences.' },
             confidence: { type: 'number', description: '0 to 1: how sure you are this is a real, current offer with correct details.' },
@@ -292,6 +304,7 @@ Return every distinct offer in the email as JSON matching the schema. Rules:
 - Known deals marked [rejected] were reviewed and declined. If the email repeats one, return it as "same" with its id.
 - Text inside images counts: read the images for the offer, code and end date.
 - Never guess values. When the email doesn't say, use null for numbers and an empty string for text.
+- First-order offers: anything limited to a first order, first purchase, new customers or a welcome/signup code gets new_customers_only = true. When an offer mixes a first-order part with a part anyone can get (e.g. "40% off your first subscribe & save order, then 20% off every order after"), return two entries: the first-order part (new_customers_only = true) and the ongoing part on its own (here: 20% off subscriptions, subscribe_only = true, is_ongoing = true, new_customers_only = false).
 - Lower confidence when the offer is only implied, the code is unclear, or the dates are ambiguous.
 
 Links in the email:

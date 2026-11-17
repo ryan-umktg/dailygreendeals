@@ -4,7 +4,7 @@
  * - same   → bumps last_seen_at on the existing deal; that's how ongoing deals stay current
  * - update → drafts are overwritten; live deals get pending_changes for Ryan to apply
  */
-import { DEAL_TYPES, SCOPES, extractDeals, parseStoredEmail, type ExtractedDeal, type KnownDeal } from './extract';
+import { DEAL_TYPES, PROMO_TYPES, SCOPES, extractDeals, parseStoredEmail, type ExtractedDeal, type KnownDeal } from './extract';
 
 const nowIso = () => new Date().toISOString();
 
@@ -21,11 +21,24 @@ const n = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : nul
 const s = (v: unknown, max = 500) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 const b = (v: unknown) => (v === true ? 1 : 0);
 
+/** Why a new deal is skipped without review, or null to keep it as a draft. */
+export const AUTO_REJECT_FIRST_ORDER = 'First order / new customers only';
+const autoReject = (d: { new_customers_only: number }) => (d.new_customers_only ? AUTO_REJECT_FIRST_ORDER : null);
+
+/** The model's promo type, or a guess from the deal type and scope when it gave none. */
+export function promoType(d: Pick<ExtractedDeal, 'promo_type' | 'deal_type' | 'scope'>): (typeof PROMO_TYPES)[number] {
+  if (d.promo_type && (PROMO_TYPES as readonly string[]).includes(d.promo_type)) return d.promo_type;
+  if (d.deal_type === 'free_shipping') return 'shipping';
+  if (d.scope === 'product' || d.scope === 'collection' || ['bogo', 'bundle', 'price_drop'].includes(d.deal_type)) return 'product';
+  return 'order';
+}
+
 function clean(d: ExtractedDeal, categories: Set<string>) {
   return {
     title: s(d.title, 160) ?? 'Untitled deal',
     scope: (SCOPES as readonly string[]).includes(d.scope) ? d.scope : 'sitewide',
     deal_type: (DEAL_TYPES as readonly string[]).includes(d.deal_type) ? d.deal_type : 'other',
+    promo_type: promoType(d),
     value_pct: n(d.value_pct),
     value_amount: n(d.value_amount),
     value_text: s(d.value_text, 200),
@@ -113,13 +126,15 @@ export async function processEmail(env: Env, inboundId: number) {
     }
 
     const d = clean(raw, categorySet);
+    const skip = autoReject(d);
 
     if (action === 'update' && existing) {
       if (existing.status === 'draft') {
         stmts.push(
           env.DB.prepare(
-            `UPDATE deals SET ${FIELDS.map((f) => `${f} = ?`).join(', ')}, last_seen_at = ?, source_email_id = ?, updated_at = ? WHERE id = ?`,
-          ).bind(...FIELDS.map((f) => d[f]), seenAt, inboundId, nowIso(), existing.id),
+            `UPDATE deals SET ${FIELDS.map((f) => `${f} = ?`).join(', ')}, last_seen_at = ?, source_email_id = ?, updated_at = ?,
+               status = CASE WHEN ? IS NOT NULL THEN 'rejected' ELSE status END, auto_rejected = ? WHERE id = ?`,
+          ).bind(...FIELDS.map((f) => d[f]), seenAt, inboundId, nowIso(), skip, skip, existing.id),
         );
       } else {
         stmts.push(
@@ -132,12 +147,14 @@ export async function processEmail(env: Env, inboundId: number) {
     }
 
     // New deal: insert, then its products (D1 batches run in order, so last_insert_rowid() is this deal).
-    created++;
+    // First-order-only offers go straight to rejected (with the reason), so they skip the review queue
+    // and later emails repeating them are recognised as already declined.
+    if (!skip) created++;
     stmts.push(
       env.DB.prepare(
-        `INSERT INTO deals (company_id, ${FIELDS.join(', ')}, status, first_seen_at, last_seen_at, source_email_id)
-         VALUES (?, ${FIELDS.map(() => '?').join(', ')}, 'draft', ?, ?, ?)`,
-      ).bind(row.company_id, ...FIELDS.map((f) => d[f]), seenAt, seenAt, inboundId),
+        `INSERT INTO deals (company_id, ${FIELDS.join(', ')}, status, auto_rejected, first_seen_at, last_seen_at, source_email_id)
+         VALUES (?, ${FIELDS.map(() => '?').join(', ')}, ?, ?, ?, ?, ?)`,
+      ).bind(row.company_id, ...FIELDS.map((f) => d[f]), skip ? 'rejected' : 'draft', skip, seenAt, seenAt, inboundId),
     );
     if (d.scope === 'product') {
       for (const p of raw.products ?? []) {

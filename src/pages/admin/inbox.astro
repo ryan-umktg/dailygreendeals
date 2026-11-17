@@ -61,6 +61,8 @@ const fmt = (iso: string | null) =>
 const tone: Record<string, string> = { unmatched: 'text-alert', failed: 'text-alert', extracted: 'text-spruce', received: 'text-chalk', ignored: 'text-muted' };
 const shared = new Set(String(e.NON_STORE_ADDRESSES ?? '').split(',').map((a) => a.trim().toLowerCase()));
 const field = 'rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
+const input = 'w-full rounded-[2px] border border-rule bg-white px-2 py-1.5 text-sm';
+const label = 'block text-xs font-semibold uppercase tracking-wide text-muted mb-1';
 const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
 ---
 
@@ -140,11 +142,15 @@ const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
             <td class="p-2 whitespace-nowrap">{fmt(r.sent_at ?? r.received_at)}<div class="text-xs text-muted">in {fmt(r.received_at)}</div></td>
             <td class="py-2">
               <div class="font-semibold">{r.company ?? '—'}</div>
-              <div class="text-muted">{r.alias && !shared.has(r.alias) ? r.alias : `${r.alias ?? 'shared address'} · from ${r.from_address ?? '?'}`}</div>
-              {r.status === 'unmatched' && (
-                <div class="text-xs text-alert">
-                  Add <span class="font-mono">{r.alias && !shared.has(r.alias) ? r.alias : `@${String(r.from_address ?? '').split('@')[1]?.split('.').slice(-2).join('.') ?? ''}`}</span> to a store
-                </div>
+              {r.status === 'unmatched' ? (
+                <>
+                  <button type="button" class="add-store text-left text-chalk underline decoration-dotted" data-email={r.id} title="Add a store for this address">
+                    {r.alias && !shared.has(r.alias) ? r.alias : `${r.alias ?? 'shared address'} · from ${r.from_address ?? '?'}`}
+                  </button>
+                  <div class="text-xs text-alert">No store yet. Click the address to add one.</div>
+                </>
+              ) : (
+                <div class="text-muted">{r.alias && !shared.has(r.alias) ? r.alias : `${r.alias ?? 'shared address'} · from ${r.from_address ?? '?'}`}</div>
               )}
             </td>
             <td class="py-2"><a class="underline" href={`/admin/emails/${r.id}/`}>{r.subject ?? '(no subject)'}</a>{r.error && <div class="text-alert">{r.error}</div>}</td>
@@ -162,4 +168,79 @@ const filtered = Object.entries(f).some(([k, v]) => k !== 'sort' && v);
       }
     </tbody>
   </table>
+
+  <dialog id="store-dialog" class="sheet m-auto w-full max-w-lg p-0 backdrop:bg-ink/40">
+    <form id="store-form" method="post" action="/api/admin/stores/" class="grid gap-3 p-5">
+      <h2 class="text-xl font-bold">Add a store</h2>
+      <p id="store-note" class="text-sm text-muted">Looking at the email…</p>
+      <input type="hidden" name="return_to" value={Astro.url.pathname + Astro.url.search} />
+      <label><span class={label}>Name</span><input class={input} name="name" required /></label>
+      <label><span class={label}>Website</span><input class={input} name="website" type="url" placeholder="https://" /></label>
+      <label>
+        <span class={label}>Addresses (one per line)</span>
+        <textarea class={input + ' font-mono'} name="addresses" rows="3"></textarea>
+        <span class="text-xs text-muted">The signup address, and the sender's domain with a leading @ so mail from that store to any address matches too.</span>
+      </label>
+      <p id="store-taken" class="hidden bg-pencil-soft px-3 py-2 text-sm"></p>
+      <p id="store-error" class="hidden text-sm text-alert"></p>
+      <p class="text-xs text-muted">Its waiting emails are matched and sent for extraction as soon as it's saved. Categories and the rest can be filled in on the Stores page.</p>
+      <div class="flex gap-2">
+        <button class="btn-primary !py-2" id="store-save">Add store</button>
+        <button type="button" class="btn-quiet !py-2" id="store-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const dialog = document.getElementById('store-dialog') as HTMLDialogElement;
+    const form = document.getElementById('store-form') as HTMLFormElement;
+    const note = document.getElementById('store-note')!;
+    const taken = document.getElementById('store-taken')!;
+    const error = document.getElementById('store-error')!;
+    const save = document.getElementById('store-save') as HTMLButtonElement;
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+
+    document.querySelectorAll<HTMLButtonElement>('.add-store').forEach((btn) =>
+      btn.addEventListener('click', async () => {
+        for (const n of ['name', 'website', 'addresses']) field(n).value = '';
+        note.textContent = 'Looking at the email…';
+        taken.classList.add('hidden');
+        error.classList.add('hidden');
+        dialog.showModal();
+        try {
+          const res = await fetch(`/api/admin/emails/${btn.dataset.email}/store-guess/`);
+          const g = (await res.json()) as { error?: string; name: string; website: string; addresses: string[]; note: string; taken: { address: string; store: string }[] };
+          if (!res.ok) throw new Error(g.error ?? `Error ${res.status}`);
+          field('name').value = g.name;
+          field('website').value = g.website;
+          field('addresses').value = g.addresses.join('\n');
+          note.textContent = g.note;
+          if (g.taken.length) {
+            taken.textContent = `Already linked to a store: ${g.taken.map((t) => `${t.address} (${t.store})`).join(', ')}. Remove it here, or add the other address to that store on the Stores page.`;
+            taken.classList.remove('hidden');
+          }
+          field('name').focus();
+        } catch (err) {
+          note.textContent = `Couldn't read the email (${(err as Error).message}). Fill the fields in by hand.`;
+        }
+      }),
+    );
+
+    document.getElementById('store-cancel')!.addEventListener('click', () => dialog.close());
+
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      save.disabled = true;
+      error.classList.add('hidden');
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        if (!res.ok) throw new Error(await res.text());
+        location.reload();
+      } catch (err) {
+        error.textContent = (err as Error).message;
+        error.classList.remove('hidden');
+        save.disabled = false;
+      }
+    });
+  </script>
 </Admin>

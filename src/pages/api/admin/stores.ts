@@ -26,6 +26,31 @@ export const POST: APIRoute = async ({ request }) => {
     fstr(f, 'status', 10) === 'paused' ? 'paused' : 'active',
   ];
 
+  // Check the addresses before saving anything, so a rejected address doesn't leave an empty store behind.
+  // One address per line: signup addresses (vivimu@dailygreendeals.com) or sender domains (@vivimu.com).
+  const addresses = (fstr(f, 'addresses', 4000) ?? '')
+    .split(/[\s,]+/)
+    .map((a) => a.trim().toLowerCase())
+    .filter((a) => /^[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$/.test(a));
+  const shared = String(e.NON_STORE_ADDRESSES ?? '').split(',').map((a) => a.trim().toLowerCase()).filter((a) => addresses.includes(a));
+  if (shared.length) {
+    return new Response(
+      `${shared.join(', ')} is a shared signup address used for many stores, so it can't identify one store. Add the store's sender domain instead (e.g. @vivimu.com).`,
+      { status: 400 },
+    );
+  }
+  const taken = addresses.length
+    ? (
+        await e.DB.prepare(
+          `SELECT address FROM email_sources WHERE company_id != ? AND address IN (${addresses.map(() => '?').join(',')})`,
+        )
+          .bind(id ?? -1, ...addresses)
+          .all<{ address: string }>()
+      ).results.map((r) => r.address)
+    : [];
+  if (taken.length) return new Response(`Already linked to another store: ${taken.join(', ')}`, { status: 409 });
+
+
   let companyId: number;
   if (id) {
     await e.DB.prepare(
@@ -47,29 +72,6 @@ export const POST: APIRoute = async ({ request }) => {
     companyId = row!.id;
   }
 
-  // One address per line: signup addresses (vivimu@dailygreendeals.com) or sender domains (@vivimu.com).
-  const addresses = (fstr(f, 'addresses', 4000) ?? '')
-    .split(/[\s,]+/)
-    .map((a) => a.trim().toLowerCase())
-    .filter((a) => /^[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$/.test(a));
-  const shared = String(e.NON_STORE_ADDRESSES ?? '').split(',').map((a) => a.trim().toLowerCase()).filter((a) => addresses.includes(a));
-  if (shared.length) {
-    return new Response(
-      `${shared.join(', ')} is a shared signup address used for many stores, so it can't identify one store. Add the store's sender domain instead (e.g. @vivimu.com).`,
-      { status: 400 },
-    );
-  }
-  const taken = addresses.length
-    ? (
-        await e.DB.prepare(
-          `SELECT address FROM email_sources WHERE company_id != ? AND address IN (${addresses.map(() => '?').join(',')})`,
-        )
-          .bind(companyId, ...addresses)
-          .all<{ address: string }>()
-      ).results.map((r) => r.address)
-    : [];
-  if (taken.length) return new Response(`Already linked to another store: ${taken.join(', ')}`, { status: 409 });
-
   await e.DB.batch([
     e.DB.prepare('DELETE FROM email_sources WHERE company_id = ?').bind(companyId),
     ...addresses.map((a) => e.DB.prepare('INSERT INTO email_sources (address, company_id) VALUES (?, ?)').bind(a, companyId)),
@@ -79,5 +81,6 @@ export const POST: APIRoute = async ({ request }) => {
   // A fixed handful of calls however many are waiting (the free Workers plan allows 50 per request).
   await matchWaitingEmails(e, companyId, addresses);
 
-  return back('/admin/stores/');
+  const to = fstr(f, 'return_to', 300);
+  return back(to?.startsWith('/admin/') ? to : '/admin/stores/');
 };
