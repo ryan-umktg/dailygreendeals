@@ -72,9 +72,10 @@ const TIME_BUDGET_MS = Number(process.env.TIME_BUDGET_MINUTES ?? 12) * 60_000;
 const started = Date.now();
 const stats = { seen: 0, candidates: 0, already_have: 0, sent: 0, queued: 0, unmatched: 0, duplicate: 0, skipped: 0, failed: 0, moved: 0, out_of_time: 0 };
 
-async function post(path, init) {
+async function post(path, init, params = {}) {
   const url = new URL(process.env.INGEST_URL);
   url.pathname = url.pathname.replace(/\/?$/, '/') + path;
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   return fetch(url, { ...init, headers: { authorization: `Bearer ${process.env.INGEST_TOKEN}`, ...init.headers } });
 }
 
@@ -180,11 +181,11 @@ try {
         for await (const chunk of content) chunks.push(chunk);
         const raw = Buffer.concat(chunks);
 
-        const res = await post(item.alias ? `?alias=${encodeURIComponent(item.alias)}` : '', {
+        const res = await post('', {
           method: 'POST',
           headers: { 'content-type': 'message/rfc822' },
           body: raw,
-        });
+        }, item.alias ? { alias: item.alias } : {});
         const body = await res.json().catch(() => ({}));
         if (!res.ok || !body.ok) throw new Error(`ingest returned ${res.status} ${body.error ?? ''}`);
         stats.sent++;
